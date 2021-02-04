@@ -1,0 +1,39 @@
+
+#cloud-config
+
+# Writes wireguard config and fastrtps config
+write_files:
+- content:|
+  [Interface]
+Address = 10.200.200.0/24
+SaveConfig = true
+PrivateKey = YMFW0fD7lpzMLABAIq0b6g/cO0LxWUbC5alc1GPKRHY=
+ListenPort = 51820
+
+
+[Peer]
+PublicKey = u/JEiA1IzaXFgS/1ClJiiOQcnHUfly882ZYM/wulvVA=
+AllowedIPs = 10.200.200.1/32
+
+[Peer]
+PublicKey = b+10+pR/5D/pWLTqb7SMe8z29MevWThyWdJUQp5OaxI=
+AllowedIPs = 10.200.200.2/32
+
+[Peer]
+PublicKey = dqJksmlm+uqAq1nzjkeSmD/kSQ48GRE4YOnEU5lZRQ4=
+AllowedIPs = 10.200.200.3/32
+
+[Peer]
+PublicKey = +n8Wxsha5QWuX2JenvMj/eUKJu/NTB8kNyMEvUlbhGk=
+AllowedIPs = 10.200.200.4/32
+
+[Peer]
+PublicKey = QW2h1Z3m4smh90AOez4Q6gChGy3ZZAzJklCYRptmb2w=
+AllowedIPs = 10.200.200.5/32
+
+[Peer]
+PublicKey = sFqcBeSoxmHwT/jOolG4pIUuhb0Pj/wNkBBIxa3+YxE=
+AllowedIPs = 10.200.200.6/32
+
+
+  path: /etc/wireguard/wg0.conf
