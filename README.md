@@ -46,6 +46,16 @@ We can try to ping the server
 ```
 ping 10.200.200.0
 ```
+Once done testing your client out exit and clean up your clientvm:
+```
+vagrant destroy
+```
+You may also clean up the cloud instances by running.
+```
+cd terraform/
+terraform destroy
+```
+To clean up the mess thats been created we can 
 ## Setting up clients
 For each client in the client folder we have a wireguard key and 
 
