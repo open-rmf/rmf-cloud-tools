@@ -39,7 +39,7 @@ You will now have an AWS server configured with ros2 and fastrtps that can talk
 to clients.
 
 ## Setting up clients
-For each client in the client folder
+For each client in the client folder we have a wireguard key and 
 
 
 ## Scaling up
