@@ -10,6 +10,7 @@ end
 
 if ARGV.length != 1
     puts "Usage: generate_config.rb [num of clients]"
+    exit
 end
 num_clients = ARGV[0].to_i
 
@@ -56,11 +57,12 @@ WIREGUARD_CLIENT_TEMPLATE = <<WGTEMPLATE
 Address = <%= client_ip %>
 SaveConfig = true
 PrivateKey = <%= client_private_key %>
-ListenPort = 51820
+ListenPort = <%= server_port %>
 
 [Peer]
 PublicKey = <%= server_public_key %>
-AllowedIPs = <%= server_ip %>
+AllowedIPs = <%= server_ip%>
+Endpoint = <%= remote_ip%>:<%= server_port%>
 WGTEMPLATE
 
 FASTRTPS_CLIENT = <<WGTEMPLATE
@@ -85,6 +87,26 @@ FASTRTPS_CLIENT = <<WGTEMPLATE
 </dds>
 WGTEMPLATE
 
+VAGRANT_FILE = <<VAGRANT
+
+Vagrant.configure("2") do |config|
+    # Every Vagrant development environment requires a box. You can search for
+    # boxes at https://vagrantcloud.com/search.
+    config.vm.box = "bento/ubuntu-20.04"
+    config.vm.provision "shell", inline: <<-SHELL
+        mkdir -p /etc/wireguard/
+        mkdir -p /etc/fastrtps_cloud/
+        cp /vagrant/wg0.conf /etc/wireguard/
+        cp /vagrant/fastrtps.xml /etc/fastrtps_cloud/
+        apt-get update -y
+        apt-get install -y wireguard
+        wg-quick up wg0
+        systemctl enable wg-quick@wg0
+        systemctl start wg-quick@wg0
+    SHELL
+end
+  
+VAGRANT
 
 server_private_key, server_public_key = generate_wireguard_key()
 
@@ -136,6 +158,29 @@ File.open("scripts/wg_setup.yaml", "w") { |f|
 }
 
 
+puts "Initiallizing terraform"
+res  =`terraform -chdir=terraform/ init -input=false`
+
+if not $?.success?
+    puts res
+    fail
+end
+
+puts "Deploying server"
+`terraform -chdir=terraform/ apply -auto-approve`
+if not $?.success?
+    fail
+end
+
+remote_ip = `echo "aws_instance.rmf_demo_server.public_ip" | terraform -chdir=terraform/ console | sed 's/"//g'`.chop
+
+if not $?.success?
+    fail
+end
+
+puts "Provisioned VPN server on #{remote_ip}"
+
+
 FileUtils.mkdir_p "clients"
 client_ip = ""
 client_private_key = ""
@@ -148,5 +193,8 @@ clients.each do |client|
     }
     File.open("clients/client_#{client["client_num"]}/fastrtps.xml", "w") { |f| 
         f.puts ERB.new(FASTRTPS_CLIENT).result()
+    }
+    File.open("clients/client_#{client["client_num"]}/Vagrantfile", "w") { |f| 
+        f.puts VAGRANT_FILE
     }
 end
