@@ -30,7 +30,7 @@ The scripts folder contains all the information required to provision a VM via
 clients (more on that later).
 
 To test the VPN simply provision a client vm. In particular we will spawn a client
-VPN. You will need [vagrant](https://www.vagrantup.com/) to do this.
+VM. You will need [vagrant](https://www.vagrantup.com/) to do this.
 This is as simple as the following:
 ```
 cd clients/client_1

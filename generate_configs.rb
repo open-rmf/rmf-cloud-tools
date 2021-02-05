@@ -94,6 +94,10 @@ Vagrant.configure("2") do |config|
     # boxes at https://vagrantcloud.com/search.
     config.vm.box = "bento/ubuntu-20.04"
     config.vm.provision "shell", inline: <<-SHELL
+        curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+        echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list
+        apt update
+        apt install -y ros-foxy-ros-base
         mkdir -p /etc/wireguard/
         mkdir -p /etc/fastrtps_cloud/
         cp /vagrant/wg0.conf /etc/wireguard/
@@ -143,9 +147,13 @@ cloud_init = {
         }
     ],
     "packages" => [
-        "wireguard"
+        "wireguard", "curl", "gnupg2", "lsb-release"
     ],
     "runcmd" => [
+        "curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -",
+        'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list',
+        "apt update",
+        "apt install -y ros-foxy-ros-base",
         "wg-quick up wg0",
         "sudo systemctl enable wg-quick@wg0",
         "sudo systemctl start wg-quick@wg0"
