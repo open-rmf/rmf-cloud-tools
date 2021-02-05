@@ -1,0 +1,6 @@
+scripts/
+*.pem
+*.pub
+*.terraform*
+*.tfstate*
+.vscode

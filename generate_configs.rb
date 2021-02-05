@@ -1,5 +1,6 @@
 require 'erb'
 require 'fileutils'
+require 'yaml'
 
 def generate_wireguard_key()
     private_key = `wg genkey`.chop
@@ -105,21 +106,32 @@ end
 FileUtils.mkdir_p "scripts"
 
 wireguard_server_config = ERB.new(WIREGUARD_SERVER_TEMPLATE).result()
+fastrtps_server_config = ERB.new(FASTRTPS_SERVER_TEMPLATE).result()
 
-CLOUD_INIT_SCRIPT = <<CLOUDINIT
+cloud_init = {
+    "write_files" => [
+        {
+            "path" => "/etc/wireguard/wg0.conf",
+            "content" => wireguard_server_config
+        },
+        {
+            "path" => "/etc/fastrtps_cloud_config/cloud_config.xml",
+            "content"=> fastrtps_server_config
+        }
+    ],
+    "packages" => [
+        "wireguard"
+    ],
+    runcmd:[
+        "wg-quick up wg0",
+        "sudo systemctl enable wg-quick@wg0",
+        "sudo systemctl start wg-quick@wg0"]
+}
 
-#cloud-config
-
-# Writes wireguard config and fastrtps config
-write_files:
-- content:|
-  <%= wireguard_server_config %>
-  path: /etc/wireguard/wg0.conf
-CLOUDINIT
-
-
-
-File.open("scripts/wg_setup.yaml", "w") { |f| f.write ERB.new(CLOUD_INIT_SCRIPT).result() }
+File.open("scripts/wg_setup.yaml", "w") { |f| 
+    f.puts "#cloud-config"
+    YAML.dump(cloud_init, f)
+}
 
 #puts ERB.new(WIREGUARD_SERVER_TEMPLATE).result()
 #puts ERB.new(FASTRTPS_SERVER_TEMPLATE).result()

@@ -2,11 +2,10 @@
 Deployment tools for using RMF in clouds
 
 
-!!! Warning/Achtung this is extremely unstable at the moment !!!
+!!! :warning: Warning/Achtung this is extremely unstable at the moment !!!
 
 
-Whatever I've written in the readme doesn't yet work it will work in 
-< 24h.
+Whatever I've written in the readme semi-works but currently has security loopholes!!
 
 # Current Status
 This shows a proof-of-concept deployment of ROS2 Foxy in the cloud 
