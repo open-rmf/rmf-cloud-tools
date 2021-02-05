@@ -1,4 +1,5 @@
 scripts/
+clients/
 *.pem
 *.pub
 *.terraform*

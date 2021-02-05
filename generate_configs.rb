@@ -60,7 +60,7 @@ ListenPort = 51820
 
 [Peer]
 PublicKey = <%= server_public_key %>
-AllowedIPs = 10.200.200.2/32
+AllowedIPs = <%= server_ip %>
 WGTEMPLATE
 
 FASTRTPS_CLIENT = <<WGTEMPLATE
@@ -97,6 +97,7 @@ clients = []
 (1..num_clients).each do |x|
     client_private, client_public = generate_wireguard_key()
     clients.append({
+        "client_num" => x,
         "client_ip" => "#{ip_prefix}.#{x}",
         "client_private_key" => client_private,
         "client_public_key"=> client_public
@@ -122,10 +123,11 @@ cloud_init = {
     "packages" => [
         "wireguard"
     ],
-    runcmd:[
+    "runcmd" => [
         "wg-quick up wg0",
         "sudo systemctl enable wg-quick@wg0",
-        "sudo systemctl start wg-quick@wg0"]
+        "sudo systemctl start wg-quick@wg0"
+    ]
 }
 
 File.open("scripts/wg_setup.yaml", "w") { |f| 
@@ -133,5 +135,18 @@ File.open("scripts/wg_setup.yaml", "w") { |f|
     YAML.dump(cloud_init, f)
 }
 
-#puts ERB.new(WIREGUARD_SERVER_TEMPLATE).result()
-#puts ERB.new(FASTRTPS_SERVER_TEMPLATE).result()
+
+FileUtils.mkdir_p "clients"
+client_ip = ""
+client_private_key = ""
+clients.each do |client|
+    FileUtils.mkdir_p "clients/client_#{client["client_num"]}"
+    client_ip = client["client_ip"]
+    client_private_key = client["client_private_key"]
+    File.open("clients/client_#{client["client_num"]}/wg0.conf", "w") { |f| 
+        f.puts ERB.new(WIREGUARD_CLIENT_TEMPLATE).result()
+    }
+    File.open("clients/client_#{client["client_num"]}/fastrtps.xml", "w") { |f| 
+        f.puts ERB.new(FASTRTPS_CLIENT).result()
+    }
+end
