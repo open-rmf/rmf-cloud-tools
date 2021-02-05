@@ -135,6 +135,10 @@ FileUtils.mkdir_p "scripts"
 wireguard_server_config = ERB.new(WIREGUARD_SERVER_TEMPLATE).result()
 fastrtps_server_config = ERB.new(FASTRTPS_SERVER_TEMPLATE).result()
 
+puts "Generating SSH key"
+`ssh-keygen -b 2048 -t rsa -f server_access.key -q -N ""`
+pub_key = `ssh-keygen -f server_access.key -y`
+
 cloud_init = {
     "write_files" => [
         {
@@ -148,6 +152,9 @@ cloud_init = {
     ],
     "packages" => [
         "wireguard", "curl", "gnupg2", "lsb-release"
+    ],
+    "ssh_authorized_keys" => [
+        pub_key
     ],
     "runcmd" => [
         "curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -",
@@ -187,6 +194,8 @@ if not $?.success?
 end
 
 puts "Provisioned VPN server on #{remote_ip}"
+puts "You may ssh like so:"
+puts "\t ssh -i  server_access.key ubuntu@#{remote_ip}"
 
 
 FileUtils.mkdir_p "clients"

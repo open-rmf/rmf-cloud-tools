@@ -29,6 +29,7 @@ The scripts folder contains all the information required to provision a VM via
 `cloud-init`. While the `clients` folder contains everything needed for the
 clients (more on that later).
 
+## Testing VPN on the client
 To test the VPN simply provision a client vm. In particular we will spawn a client
 VM. You will need [vagrant](https://www.vagrantup.com/) to do this.
 This is as simple as the following:
@@ -55,7 +56,6 @@ You may also clean up the cloud instances by running.
 cd terraform/
 terraform destroy
 ```
-To clean up the mess thats been created we can 
 ## Setting up clients
 For each client in the client folder we have a wireguard key and 
 

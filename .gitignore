@@ -5,3 +5,4 @@ clients/
 *.terraform*
 *.tfstate*
 .vscode
+*.key
