@@ -56,17 +56,16 @@ You may also clean up the cloud instances by running.
 cd terraform/
 terraform destroy
 ```
-## Setting up clients
-For each client in the client folder we have a wireguard key and 
+## Setting up ROS2 connection
+
 
 
 ## Scaling up
 Use chef. [TODO explain how]
 
 ## TODO
-* Stop passing `wg0.conf` in `user_data`. This is very bad practice. 
-* Custom ssh key to log in.
 * Make region configureable.
 * Make clients configureable.
 * Make IP namespace configureable.
 * Generate G-Pi images
+* Bridge network

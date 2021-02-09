@@ -142,10 +142,6 @@ pub_key = `ssh-keygen -f server_access.key -y`
 cloud_init = {
     "write_files" => [
         {
-            "path" => "/etc/wireguard/wg0.conf",
-            "content" => wireguard_server_config
-        },
-        {
             "path" => "/etc/fastrtps_cloud_config/cloud_config.xml",
             "content"=> fastrtps_server_config
         }
@@ -160,10 +156,7 @@ cloud_init = {
         "curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -",
         'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list',
         "apt update",
-        "apt install -y ros-foxy-ros-base",
-        "wg-quick up wg0",
-        "sudo systemctl enable wg-quick@wg0",
-        "sudo systemctl start wg-quick@wg0"
+        "apt install -y ros-foxy-ros-base"
     ]
 }
 
@@ -184,14 +177,36 @@ end
 puts "Deploying server"
 `terraform -chdir=terraform/ apply -auto-approve`
 if not $?.success?
+    puts "failed to deploy server"
     fail
 end
 
 remote_ip = `echo "aws_instance.rmf_demo_server.public_ip" | terraform -chdir=terraform/ console | sed 's/"//g'`.chop
 
 if not $?.success?
+    puts "failed to retrieve remote ip"
     fail
 end
+
+puts "Configuring wireguard (in 40s)"
+# sleep to give time for firewall rules to propagate
+sleep(40)
+`ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo mkdir -p /etc/wireguard/'`
+if not $?.success?
+    puts "failed to copy wireguard configs over... retrying in 20s"
+    sleep(20)
+    `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo mkdir -p /etc/wireguard/'`
+    if not $?.success?
+        fail
+    end
+end
+
+`ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'echo "#{wireguard_server_config}" | sudo tee /etc/wireguard/wg0.conf'`
+`ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo wg-quick up wg0'`
+`ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo systemctl enable wg-quick@wg0'`
+wireguard = `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo wg'`
+
+puts wireguard
 
 puts "Provisioned VPN server on #{remote_ip}"
 puts "You may ssh like so:"
