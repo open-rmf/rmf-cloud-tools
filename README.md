@@ -56,10 +56,25 @@ You may also clean up the cloud instances by running.
 cd terraform/
 terraform destroy
 ```
-## Setting up ROS2 connection
+## Setting up ROS2 connection (via FASTRTPS)
 
+Wireguard does not allow for multi-cast, hence we need to have a special configuration
+for Fast-RTPS. The config file is generated once the IPs have been allocated by
+Terraform. To inspect the config you may ssh into the server and enter:
 
+```
+cat $FASTRTPS_DEFAULT_PROFILES_FILE
+```
 
+Its trivial to set up a ROS 2 based connection over the network. On the server one can
+simply run:
+```
+ros2 topic pub /talker  std_msgs/String "data: Hello"
+```
+On the client VM one can run the usual:
+```
+ros2 topic echo /talker
+```
 ## Scaling up
 Use chef. [TODO explain how]
 
