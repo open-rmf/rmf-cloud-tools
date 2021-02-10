@@ -106,7 +106,8 @@ Vagrant.configure("2") do |config|
         apt-get install -y wireguard
         wg-quick up wg0
         systemctl enable wg-quick@wg0
-        systemctl start wg-quick@wg0
+        echo "source /opt/ros/foxy/setup.bash" >> /home/vagrant/.bashrc
+        echo "export FASTRTPS_DEFAULT_PROFILES_FILE=/etc/fastrtps_cloud/fastrtps.xml" >> /home/vagrant/.bashrc
     SHELL
 end
   
@@ -204,6 +205,8 @@ end
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'echo "#{wireguard_server_config}" | sudo tee /etc/wireguard/wg0.conf'`
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo wg-quick up wg0'`
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo systemctl enable wg-quick@wg0'`
+`ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'echo ". /opt/ros/foxy/setup.bash" >> ~/.bashrc'`
+`ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'echo "export FASTRTPS_DEFAULT_PROFILES_FILE=/etc/fastrtps_cloud_config/cloud_config.xml" >> ~/.bashrc'`
 wireguard = `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo wg'`
 
 puts wireguard
