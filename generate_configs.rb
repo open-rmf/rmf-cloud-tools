@@ -97,18 +97,37 @@ Vagrant.configure("2") do |config|
         curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
         echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list
         apt update
-        apt install -y ros-foxy-ros-base
+        apt install -y ros-foxy-desktop
         mkdir -p /etc/wireguard/
         mkdir -p /etc/fastrtps_cloud/
         cp /vagrant/wg0.conf /etc/wireguard/
         cp /vagrant/fastrtps.xml /etc/fastrtps_cloud/
         apt-get update -y
-        apt-get install -y wireguard
+        apt-get install -y wireguard 
         wg-quick up wg0
         systemctl enable wg-quick@wg0
         echo "source /opt/ros/foxy/setup.bash" >> /home/vagrant/.bashrc
         echo "export FASTRTPS_DEFAULT_PROFILES_FILE=/etc/fastrtps_cloud/fastrtps.xml" >> /home/vagrant/.bashrc
+        apt update 
+        apt install -y git cmake python3-vcstool curl qt5-default python3-shapely python3-yaml python3-requests
+        apt-get install -y python3-colcon* 
+        apt install -y python3-rosdep
+        sudo rosdep init
+        rosdep update
+        cd /home/vagrant
+        echo "vagrant" | su vagrant <<EOSU
+        source /home/vagrant/.bashrc
+        mkdir -p ~/rmf_demos_ws/src
+        cd ~/rmf_demos_ws
+        wget https://raw.githubusercontent.com/osrf/rmf_demos/master/rmf_demos.repos
+        vcs import src < rmf_demos.repos
+        sudo  rosdep install --from-paths src --ignore-src --rosdistro foxy -yr
+        colcon build
+        EOSU
     SHELL
+    config.vm.provider "virtualbox" do |v|
+        v.gui = true
+    end
 end
   
 VAGRANT
@@ -117,7 +136,7 @@ server_private_key, server_public_key = generate_wireguard_key()
 
 ip_prefix = "10.200.200"
 server_port = 51820
-server_ip = "#{ip_prefix}.0"
+server_ip = "#{ip_prefix}.1"
 
 clients = []
 
@@ -125,7 +144,7 @@ clients = []
     client_private, client_public = generate_wireguard_key()
     clients.append({
         "client_num" => x,
-        "client_ip" => "#{ip_prefix}.#{x}",
+        "client_ip" => "#{ip_prefix}.#{x+1}",
         "client_private_key" => client_private,
         "client_public_key"=> client_public
     })
@@ -148,7 +167,7 @@ cloud_init = {
         }
     ],
     "packages" => [
-        "wireguard", "curl", "gnupg2", "lsb-release"
+        "wireguard", "curl", "gnupg2", "lsb-release", "build-essential", "npm"
     ],
     "ssh_authorized_keys" => [
         pub_key
@@ -157,7 +176,21 @@ cloud_init = {
         "curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -",
         'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list',
         "apt update",
-        "apt install -y ros-foxy-ros-base"
+        "apt install -y ros-foxy-ros-base",
+        "apt update", 
+        "apt install -y git cmake python3-vcstool curl qt5-default python3-shapely python3-yaml python3-requests",
+        "apt-get install -y python3-colcon*",
+        "apt install -y python3-rosdep",
+        "source home/ubuntu/.bashrc",
+        "sudo rosdep init",
+        "rosdep update",
+        "su ubuntu",
+        "source /home/ubuntu/.bashrc",
+        "mkdir -p /home/ubuntu/rmf_demos_ws/src",
+        "cd /home/ubuntu/rmf_demos_ws && wget https://raw.githubusercontent.com/osrf/rmf_demos/master/rmf_demos.repos",
+        "vcs import /home/ubuntu/rmf_demos_ws/src < /home/ubuntu/rmf_demos_ws/rmf_demos.repos",
+        "sudo  rosdep install --from-paths /home/ubuntu/rmf_demos_ws/src --ignore-src --rosdistro foxy -yr",
+        "cd /home/ubuntu/rmf_demos_ws/ && colcon build",
     ]
 }
 
@@ -189,9 +222,9 @@ if not $?.success?
     fail
 end
 
-puts "Configuring wireguard (in 40s)"
+puts "Configuring wireguard (in 50s)"
 # sleep to give time for firewall rules to propagate
-sleep(40)
+sleep(50)
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo mkdir -p /etc/wireguard/'`
 if not $?.success?
     puts "failed to copy wireguard configs over... retrying in 20s"
