@@ -111,7 +111,7 @@ Vagrant.configure("2") do |config|
         curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
         echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list
         apt update
-        apt install -y ros-foxy-base
+        apt install -y ros-foxy-ros-base
         mkdir -p /etc/wireguard/
         mkdir -p /etc/fastrtps_cloud/
         cp /vagrant/wg0.conf /etc/wireguard/
@@ -162,7 +162,7 @@ cloud_init = {
         }
     ],
     "packages" => [
-        "wireguard", "curl", "gnupg2", "lsb-release", "build-essential", "npm"
+        "curl", "gnupg2", "lsb-release", "build-essential"
     ],
     "ssh_authorized_keys" => [
         pub_key
@@ -216,6 +216,11 @@ if not $?.success?
     end
 end
 
+result = `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo apt install -y wireguard'`
+if not $?.success?
+    puts "failed to provision wirguard"
+    fail
+end
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'echo "#{wireguard_server_config}" | sudo tee /etc/wireguard/wg0.conf'`
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo wg-quick up wg0'`
 `ssh -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i server_access.key ubuntu@#{remote_ip} 'sudo systemctl enable wg-quick@wg0'`
