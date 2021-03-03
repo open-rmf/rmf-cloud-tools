@@ -122,7 +122,6 @@ Vagrant.configure("2") do |config|
         systemctl enable wg-quick@wg0
         echo "source /opt/ros/foxy/setup.bash" >> /home/vagrant/.bashrc
         echo "export FASTRTPS_DEFAULT_PROFILES_FILE=/etc/fastrtps_cloud/fastrtps.xml" >> /home/vagrant/.bashrc
-        EOSU
     SHELL
 end
   
