@@ -36,6 +36,12 @@ FASTRTPS_SERVER_TEMPLATE = <<WGTEMPLATE
 <rtps>
 <builtin>
 <initialPeersList>
+    <locator>
+    <udpv4>
+      <address><%= server_ip%></address>
+      <port>7400</port>
+    </udpv4>
+    </locator>
     <% clients.each do |client| %>
 	<locator>
 		<udpv4>
@@ -79,6 +85,14 @@ FASTRTPS_CLIENT = <<WGTEMPLATE
 		 <port>7400</port>
 		</udpv4>
     </locator>
+    <% clients.each do |client| %>
+        <locator>
+            <udpv4>
+             <address><%= client["client_ip"]%></address>
+             <port>7400</port>
+            </udpv4>
+        </locator>
+    <% end %>
 </initialPeersList>
 </builtin>
 </rtps>
@@ -97,7 +111,7 @@ Vagrant.configure("2") do |config|
         curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
         echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list
         apt update
-        apt install -y ros-foxy-desktop
+        apt install -y ros-foxy-base
         mkdir -p /etc/wireguard/
         mkdir -p /etc/fastrtps_cloud/
         cp /vagrant/wg0.conf /etc/wireguard/
@@ -108,26 +122,8 @@ Vagrant.configure("2") do |config|
         systemctl enable wg-quick@wg0
         echo "source /opt/ros/foxy/setup.bash" >> /home/vagrant/.bashrc
         echo "export FASTRTPS_DEFAULT_PROFILES_FILE=/etc/fastrtps_cloud/fastrtps.xml" >> /home/vagrant/.bashrc
-        apt update 
-        apt install -y git cmake python3-vcstool curl qt5-default python3-shapely python3-yaml python3-requests
-        apt-get install -y python3-colcon* 
-        apt install -y python3-rosdep
-        sudo rosdep init
-        rosdep update
-        cd /home/vagrant
-        echo "vagrant" | su vagrant <<EOSU
-        source /home/vagrant/.bashrc
-        mkdir -p ~/rmf_demos_ws/src
-        cd ~/rmf_demos_ws
-        wget https://raw.githubusercontent.com/osrf/rmf_demos/master/rmf_demos.repos
-        vcs import src < rmf_demos.repos
-        sudo  rosdep install --from-paths src --ignore-src --rosdistro foxy -yr
-        colcon build
         EOSU
     SHELL
-    config.vm.provider "virtualbox" do |v|
-        v.gui = true
-    end
 end
   
 VAGRANT
@@ -177,20 +173,6 @@ cloud_init = {
         'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list',
         "apt update",
         "apt install -y ros-foxy-ros-base",
-        "apt update", 
-        "apt install -y git cmake python3-vcstool curl qt5-default python3-shapely python3-yaml python3-requests",
-        "apt-get install -y python3-colcon*",
-        "apt install -y python3-rosdep",
-        "source home/ubuntu/.bashrc",
-        "sudo rosdep init",
-        "rosdep update",
-        "su ubuntu",
-        "source /home/ubuntu/.bashrc",
-        "mkdir -p /home/ubuntu/rmf_demos_ws/src",
-        "cd /home/ubuntu/rmf_demos_ws && wget https://raw.githubusercontent.com/osrf/rmf_demos/master/rmf_demos.repos",
-        "vcs import /home/ubuntu/rmf_demos_ws/src < /home/ubuntu/rmf_demos_ws/rmf_demos.repos",
-        "sudo  rosdep install --from-paths /home/ubuntu/rmf_demos_ws/src --ignore-src --rosdistro foxy -yr",
-        "cd /home/ubuntu/rmf_demos_ws/ && colcon build",
     ]
 }
 
