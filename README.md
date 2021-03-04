@@ -43,7 +43,7 @@ sudo wg0
 ```
 We can try to ping the server
 ```
-ping 10.200.200.0
+ping 10.200.200.1
 ```
 Once done testing your client out exit and clean up your clientvm:
 ```
