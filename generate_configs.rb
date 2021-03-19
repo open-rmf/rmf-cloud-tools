@@ -58,6 +58,40 @@ FASTRTPS_SERVER_TEMPLATE = <<WGTEMPLATE
 </dds>
 WGTEMPLATE
 
+CYCLONEDDS_TEMPLATE = <<CYCLONETEMPLATE
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+	<Domain id="any">
+		<General>
+			<NetworkInterfaceAddress><%= my_ip %></NetworkInterfaceAddress>
+			<AllowMulticast>false</AllowMulticast>
+			<MaxMessageSize>65500B</MaxMessageSize>
+			<FragmentSize>4000B</FragmentSize>
+			<Transport>udp</Transport>
+		</General>
+		<Discovery>
+			<Peers>
+                <Peer address="<%= server_ip%>"/>
+                <% clients.each do |client| %>
+                <Peer address="<%= client["client_ip"]%>"/>
+                <% end %>
+			</Peers>
+			<ParticipantIndex>auto</ParticipantIndex>
+		</Discovery>
+		<Internal>
+			<Watermarks>
+				<WhcHigh>500kB</WhcHigh>
+			</Watermarks>
+		</Internal>
+		<Tracing>
+			<Verbosity>severe</Verbosity>
+			<OutputFile>stdout</OutputFile>
+		</Tracing>
+	</Domain>
+</CycloneDDS>
+
+CYCLONETEMPLATE
+
 WIREGUARD_CLIENT_TEMPLATE = <<WGTEMPLATE
 [Interface]
 Address = <%= client_ip %>
@@ -133,6 +167,8 @@ ip_prefix = "10.200.200"
 server_port = 51820
 server_ip = "#{ip_prefix}.1"
 
+my_ip = server_ip
+
 clients = []
 
 (1..num_clients).each do |x|
@@ -149,6 +185,7 @@ FileUtils.mkdir_p "scripts"
 
 wireguard_server_config = ERB.new(WIREGUARD_SERVER_TEMPLATE).result()
 fastrtps_server_config = ERB.new(FASTRTPS_SERVER_TEMPLATE).result()
+cyclonedds_server_config = ERB.new(CYCLONEDDS_TEMPLATE).result()
 
 puts "Generating SSH key"
 `ssh-keygen -b 2048 -t rsa -f server_access.key -q -N ""`
@@ -159,6 +196,10 @@ cloud_init = {
         {
             "path" => "/etc/fastrtps_cloud_config/cloud_config.xml",
             "content"=> fastrtps_server_config
+        },
+        {
+            "path" => "/etc/cyclonedds/cloud_config.xml",
+            "content"=> cyclonedds_server_config
         }
     ],
     "packages" => [
@@ -241,6 +282,7 @@ client_private_key = ""
 clients.each do |client|
     FileUtils.mkdir_p "clients/client_#{client["client_num"]}"
     client_ip = client["client_ip"]
+    my_ip = client_ip
     client_private_key = client["client_private_key"]
     File.open("clients/client_#{client["client_num"]}/wg0.conf", "w") { |f| 
         f.puts ERB.new(WIREGUARD_CLIENT_TEMPLATE).result()
@@ -250,5 +292,8 @@ clients.each do |client|
     }
     File.open("clients/client_#{client["client_num"]}/Vagrantfile", "w") { |f| 
         f.puts VAGRANT_FILE
+    }
+    File.open("clients/client_#{client["client_num"]}/cyclonedds.xml", "w") { |f| 
+        f.puts ERB.new(CYCLONEDDS_TEMPLATE).result()
     }
 end
