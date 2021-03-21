@@ -141,3 +141,5 @@ journalctl -u gpi.service -f # Check if success
 # Use the GPi!
 1. Plug Gpi into power
 2. From remote, connect to gpi-ap over Wifi. Password is "password"
+3. contact 10.42.0.1 for any correspondence with wireguard server
+4. `ros2 topic list` , you should see `/chatter` topic from the wireguard server ( i have a heartbeat talker running )
