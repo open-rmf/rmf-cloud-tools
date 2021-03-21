@@ -88,15 +88,30 @@ systemctl start wg-quick@wg0.service
 # Setup activation script
 ```
 ### Setup /home/pi/activate-gpi as the following:
-#!/bin/bash 
-  
+#!/bin/bash
+
 echo "G POWERS ACTIVATE"
 systemctl restart hostapd.service
 sysctl -w net.ipv4.ip_forward=1
-iptables -A FORWARD -i wlan0 -o wg0 -j ACCEPT
-iptables -A FORWARD -i wg0 -o wlan0 -j ACCEPT
-iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -o wg0 -j MASQUERADE
+
+iptables -F -t nat
+iptables -F 
+
+iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 22 -j ACCEPT
+iptables -t nat -A PREROUTING -i wlan0 -d 10.42.0.1 -j DNAT --to-destination 10.200.200.1
+iptables -t nat -A POSTROUTING -o wg0 -d 10.200.200.1 -j SNAT --to 10.200.200.2
+
+iptables -t nat -A PREROUTING -i wg0 -d 10.200.200.2 -j DNAT --to-destination 10.42.0.2
+iptables -t nat -A POSTROUTING -o wlan0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
+
+
+#iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 22 -j ACCEPT
+#iptables -t nat -A PREROUTING -i eth0 -d 10.42.0.1 -j DNAT --to-destination 10.200.200.1
+#iptables -t nat -A POSTROUTING -o wg0 -d 10.200.200.1 -j SNAT --to 10.200.200.2
+
+#iptables -t nat -A PREROUTING -i wg0 -d 10.200.200.2 -j DNAT --to-destination 10.42.0.12
+#iptables -t nat -A POSTROUTING -o eth0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
+
 ###
 sudo chmod +x /home/pi/activate-gpi
 
