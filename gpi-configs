@@ -2,6 +2,12 @@
 #!/bin/bash
 
 echo "G POWERS ACTIVATE"
+systemctl stop dnsmasq.service
+if [ -f /var/lib/misc/dnsmasq.leases ]; then
+  rm /var/lib/misc/dnsmasq.leases
+fi
+systemctl start dnsmasq.service
+
 systemctl restart hostapd.service
 sysctl -w net.ipv4.ip_forward=1
 
