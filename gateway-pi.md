@@ -91,6 +91,12 @@ systemctl start wg-quick@wg0.service
 #!/bin/bash
 
 echo "G POWERS ACTIVATE"
+systemctl stop dnsmasq.service
+if [ -f /var/lib/misc/dnsmasq.leases ]; then
+  rm /var/lib/misc/dnsmasq.leases
+fi
+systemctl start dnsmasq.service
+
 systemctl restart hostapd.service
 sysctl -w net.ipv4.ip_forward=1
 
@@ -102,19 +108,22 @@ iptables -t nat -A PREROUTING -i wlan0 -d 10.42.0.1 -j DNAT --to-destination 10.
 iptables -t nat -A POSTROUTING -o wg0 -d 10.200.200.1 -j SNAT --to 10.200.200.2
 
 iptables -t nat -A PREROUTING -i wg0 -d 10.200.200.2 -j DNAT --to-destination 10.42.0.2
-iptables -t nat -A POSTROUTING -o wlan0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
+iptables -t nat -A POSTROUTING -o wlan0 -d 10.42.0.2 -j SNAT --to 10.42.0.1
 
 
 #iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 22 -j ACCEPT
 #iptables -t nat -A PREROUTING -i eth0 -d 10.42.0.1 -j DNAT --to-destination 10.200.200.1
 #iptables -t nat -A POSTROUTING -o wg0 -d 10.200.200.1 -j SNAT --to 10.200.200.2
 
-#iptables -t nat -A PREROUTING -i wg0 -d 10.200.200.2 -j DNAT --to-destination 10.42.0.12
-#iptables -t nat -A POSTROUTING -o eth0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
+#iptables -t nat -A PREROUTING -i wg0 -d 10.200.200.2 -j DNAT --to-destination 10.42.0.2
+#iptables -t nat -A POSTROUTING -o eth0 -d 10.42.0.2 -j SNAT --to 10.42.0.1
 
 ###
 sudo chmod +x /home/pi/activate-gpi
+```
 
+# Setup gpi.service 
+```
 ### Setup /etc/systemd/system/gpi.service as the following:
 [Unit]
 Description=GPi startup script
@@ -136,6 +145,76 @@ WantedBy=default.target
 sudo systemctl enable gpi.service
 sudo systemctl start gpi.service
 journalctl -u gpi.service -f # Check if success
+```
+
+# Setup cyclonedds.xml on External Device
+```
+### Setup $HOME/cyclonedds.xml as the following:
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+        <Domain id="any">
+                <General>
+                        <NetworkInterfaceAddress>wlp4s0</NetworkInterfaceAddress>
+                        <AllowMulticast>false</AllowMulticast>
+                        <MaxMessageSize>65500B</MaxMessageSize>
+                        <FragmentSize>4000B</FragmentSize>
+                        <Transport>udp</Transport>
+                        <ExternalNetworkAddress>10.200.200.2</ExternalNetworkAddress>
+                        <ExternalNetworkMask>255.255.255.0</ExternalNetworkMask>
+                </General>
+                <Discovery>
+                        <Peers>
+                                <Peer address="10.42.0.1"/>
+                                <Peer address="10.42.0.2"/>
+                        </Peers>
+                        <ParticipantIndex>auto</ParticipantIndex>
+                </Discovery>
+                <Internal>
+                        <Watermarks>
+                                <WhcHigh>500kB</WhcHigh>
+                        </Watermarks>
+                        <MultipleReceiveThreads>false</MultipleReceiveThreads>
+                </Internal>
+                <Tracing>
+                        <Verbosity>severe</Verbosity>
+                        <OutputFile>stdout</OutputFile>
+                </Tracing>
+        </Domain>
+</CycloneDDS>
+```
+
+# Setup cyclonedds.xml on Server
+```
+### Setup $HOME/cyclonedds.xml as the following
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+        <Domain id="any">
+                <General>
+                        <NetworkInterfaceAddress>wg0</NetworkInterfaceAddress>
+                        <AllowMulticast>false</AllowMulticast>
+                        <MaxMessageSize>35500B</MaxMessageSize>
+                        <FragmentSize>4000B</FragmentSize>
+                        <Transport>udp</Transport>
+                        <ExternalNetworkAddress>10.42.0.1</ExternalNetworkAddress>
+                </General>
+                <Discovery>
+                        <Peers>
+                                <Peer address="10.200.200.1"/>
+                                <Peer address="10.200.200.2"/>
+                        </Peers>
+                        <ParticipantIndex>auto</ParticipantIndex>
+                </Discovery>
+                <Internal>
+                        <Watermarks>
+                                <WhcHigh>500kB</WhcHigh>
+                        </Watermarks>
+                        <MultipleReceiveThreads>false</MultipleReceiveThreads>
+                </Internal>
+                <Tracing>
+                        <Verbosity>severe</Verbosity>
+                        <OutputFile>stdout</OutputFile>
+                </Tracing>
+        </Domain>
+</CycloneDDS>
 ```
 
 # Use the GPi!
