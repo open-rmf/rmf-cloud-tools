@@ -27,7 +27,7 @@ iptables -t nat -A POSTROUTING -o wlan0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
 #iptables -t nat -A POSTROUTING -o wg0 -d 10.200.200.1 -j SNAT --to 10.200.200.2
 
 #iptables -t nat -A PREROUTING -i wg0 -d 10.200.200.2 -j DNAT --to-destination 10.42.0.2
-#iptables -t nat -A POSTROUTING -o eth0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
+#iptables -t nat -A POSTROUTING -o eth0 -d 10.42.0.2 -j SNAT --to 10.42.0.1
 
 # CYCLONEDDS.XML on external device #
 <?xml version="1.0" encoding="UTF-8" ?>
