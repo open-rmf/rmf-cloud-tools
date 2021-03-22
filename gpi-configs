@@ -92,3 +92,6 @@ iptables -t nat -A POSTROUTING -o wlan0 -d 10.42.0.12 -j SNAT --to 10.42.0.1
                 </Tracing>
         </Domain>
 </CycloneDDS>
+
+## UDEV
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTRS{idVendor}=="0846", ATTRS{idProduct}=="68e1",  NAME="netgear"
