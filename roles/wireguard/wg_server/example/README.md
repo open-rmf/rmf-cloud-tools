@@ -1,5 +1,5 @@
 # wg_server
-Create a wireguard server on target device(s). Tested using the `docker_cluster` image.
+Create a wireguard server on target device(s). Tested using the `docker_cluster` environment.
 
 ## Setup
 Be sure to have done the Setup steps as documented in `env/docker_cluster/README`.
