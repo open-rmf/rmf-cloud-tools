@@ -1,0 +1,76 @@
+---
+- name: Get list of files to copy 
+  delegate_to: central
+  shell: "find {{ wireguard_workspace_path }}/server/{{ inventory_hostname }} -type f"
+  register: wireguard_server_files
+
+- name: create temporary storage folder on localhost for copying
+  delegate_to: localhost 
+  file:
+    path: "/tmp/{{ wireguard_workspace_path | basename }}/server/{{ inventory_hostname }}/"
+    state: directory
+  register: wireguard_server_files_local_temp_dir
+
+- name: Fetch files to localhost temporarily
+  delegate_to: central
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ wireguard_server_files_local_temp_dir.path }}"
+    flat: true
+  with_items: "{{ wireguard_server_files.stdout_lines }}"
+
+- name: deploy wireguard server config
+  copy:
+    src: "{{ wireguard_server_files_local_temp_dir.path }}/{{ item | basename }}"
+    dest: "{{ wireguard_path }}"
+    group: root
+    mode: '0600'
+  with_items: "{{ wireguard_server_files.stdout_lines }}"
+  become: yes
+
+- sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+
+- name: stop wireguard, if no systemctl
+  shell: /usr/bin/wg-quick down wg0 || /bin/true 
+  become: true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == false
+
+- name: stop wireguard service, if systemctl is available
+  service:
+    name: wg-quick@wg0.service
+    masked: no
+    state: stopped 
+    enabled: yes
+  become: yes
+  ignore_errors: yes
+  when: has_systemctl == true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+
+- name: start wireguard on server
+  shell: /usr/bin/wg-quick up wg0 || /bin/true
+  become: true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == false
+
+- name: start wireguard service on server, if systemctl is available
+  service:
+    name: wg-quick@wg0.service
+    masked: no
+    state: started
+    enabled: yes
+  become: yes
+  ignore_errors: yes
+  when: has_systemctl == true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+

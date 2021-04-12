@@ -1,0 +1,14 @@
+[Interface]
+Address = {{ client_wireguard_ip }}/{{ wireguard_subnet }}
+PrivateKey = {{ wg_client_privatekey['content'] | b64decode | replace('
+', '')}}
+PostUp = ping {{ server_wireguard_ip }} &
+PostDown = pkill ping
+DNS = {{ external_dns }}
+
+[Peer]
+PublicKey = {{ wg_server_publickey['content'] | b64decode | replace('
+', '')}}
+Endpoint = {{ hostvars[server_name]['ansible_host'] }}:{{ wireguard_network_port }}
+AllowedIPs = {{ wireguard_allowed_ips }}
+

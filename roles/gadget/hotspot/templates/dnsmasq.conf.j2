@@ -1,0 +1,7 @@
+#listen-address=::1,127.0.0.1,10.42.0.1
+interface={{ hotspot_network_interface }}
+dhcp-range={{ hotspot_ip_dhcp_start }},{{ hotspot_ip_dhcp_end }},{{ hotspot_netmask }},12h
+listen-address=::1,127.0.0.1
+server=8.8.8.8       # Forward DNS requests to Google DNS
+bind-interfaces      # Bind to the interface to make sure we aren't sending things elsewhere
+no-resolv

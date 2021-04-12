@@ -1,0 +1,8 @@
+---
+wireguard_workspace_path: "/home/ubuntu/wireguard_ws"
+wireguard_subnet: 24
+wireguard_network_port: 51820
+wireguard_network_interface: wg0
+external_dns: 8.8.8.8
+wireguard_path: "/etc/wireguard"
+has_systemctl: true

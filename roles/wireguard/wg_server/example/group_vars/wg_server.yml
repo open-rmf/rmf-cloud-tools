@@ -1,0 +1,7 @@
+---
+wireguard_network_port: 51820
+server_wireguard_subnet: 24
+wireguard_path: "/etc/wireguard"
+has_systemctl: true
+
+

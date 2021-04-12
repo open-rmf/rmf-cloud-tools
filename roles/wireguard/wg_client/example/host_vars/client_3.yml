@@ -1,0 +1,4 @@
+---
+client_wireguard_ip: 10.0.0.4
+has_systemctl: false
+

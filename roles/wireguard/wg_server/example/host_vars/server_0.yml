@@ -1,0 +1,6 @@
+---
+server_wireguard_ip: 10.0.0.1
+external_network_interface: eth0
+wireguard_network_interface: wg0
+has_systemctl: false
+

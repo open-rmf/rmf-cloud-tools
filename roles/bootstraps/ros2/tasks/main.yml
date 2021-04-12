@@ -1,0 +1,111 @@
+---
+- name: Update aptitude
+  apt:
+    upgrade: full
+    #update_cache: yes
+    #autoclean: yes
+    #autoremove: yes
+  become: yes
+
+- name: Install iproute2
+  apt:
+    name: "iproute2"
+    state: present
+  become: yes
+
+- name: Install iputils-ping
+  apt:
+    name: "iputils-ping"
+    state: present
+  become: yes
+
+# sudo apt update && sudo apt install curl gnupg2 lsb-release
+- name: Install dependencies for setting up sources
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+    - curl
+    - gnupg2
+    - lsb-release
+    - apt-utils
+  become: yes
+
+- name: Setup ROS2 keys
+  apt_key:
+    url: "{{ ros2_gpg_key_url }}"
+    state: present
+  become: yes
+
+- name: Setup ROS2 sources
+  apt_repository:
+    repo: "deb {{ ros2_repository_url }} {{ ansible_distribution_release }} main"
+    state: present
+    filename: ros2-latest
+  become: yes
+
+- name: add gazebo packages
+  shell: "echo \"deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main\" > /etc/apt/sources.list.d/gazebo-stable.list"
+  become: true
+
+- name: add gpg keys for gazebo
+  shell: 'wget https://packages.osrfoundation.org/gazebo.key -O - | apt-key add -'
+  become: true
+
+
+
+- name: Install ROS2
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+      - "{{ 'ros-' + ros2_distribution + '-' + ros2_installation_type }}"
+  become: yes
+
+- name: Install CycloneDDS
+  apt:
+    name: "ros-{{ ros2_distribution }}-rmw-cyclonedds-cpp"
+    update_cache: yes
+  become: yes
+
+- name: Install argcomplete
+  apt:
+    name: python3-argcomplete
+  become: yes
+
+- name: Install colcon to build packages
+  apt:
+    name: python3-colcon-common-extensions
+  become: yes
+
+- name: Generate CycloneDDS config
+  template:
+    src: "cyclonedds.xml.j2"
+    dest: "{{ cycloneddsxml_path }}/cyclonedds.xml"
+
+- name: Update source environment
+  lineinfile:
+    path: ~/.bashrc
+    regexp: source /opt/ros/*/setup.bash
+    line: source /opt/ros/{{ ros2_distribution }}/setup.bash
+
+- name: Update ROS2 domain id
+  lineinfile:
+    path: ~/.bashrc
+    regexp: export ROS_DOMAIN_ID=*
+    line: export ROS_DOMAIN_ID={{ ros2_domain_id }}
+
+- name: Update RMW implementation
+  lineinfile:
+    path: ~/.bashrc
+    line: export RMW_IMPLEMENTATION={{ ros2_rmw_implementation }}
+
+- name: Update to use CycloneDDS config
+  lineinfile:
+    path: ~/.bashrc
+    line: "export CYCLONEDDS_URI=file://{{ cycloneddsxml_path }}/cyclonedds.xml"
+  when: (ros2_rmw_implementation == "rmw_cyclonedds_cpp")
+
+

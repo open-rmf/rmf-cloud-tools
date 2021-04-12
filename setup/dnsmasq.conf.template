@@ -1,0 +1,5 @@
+interface=$LAN_IFACE
+dhcp-range=$LAN_DHCP_LOW,$LAN_DHCP_HIGH,$LAN_SUBNET,24h
+listen-address=::1,127.0.0.1
+server=$LAN_DNS
+no-resolv

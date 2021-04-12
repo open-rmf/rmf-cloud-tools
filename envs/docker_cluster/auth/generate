@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+
+cwd=$PWD
+script_path=$(dirname $(realpath "$0"))
+dir_path=$(dirname $script_path)
+dir_name=${dir_path##*/}
+
+cd $script_path
+
+mkdir docker_cluster_ssh_mount
+cd docker_cluster_ssh_mount
+
+ssh-keygen -t rsa -b 4096 -f "${dir_name}_id_rsa" -q -P ""
+cp "${dir_name}_id_rsa.pub" authorized_keys
+cd ..
+
+mv docker_cluster_ssh_mount/"${dir_name}_id_rsa"  .
+cp docker_cluster_ssh_mount/"${dir_name}_id_rsa.pub"  .
+sudo chmod 600 -R docker_cluster_ssh_mount
+sudo chown -R 0 docker_cluster_ssh_mount
+sudo chgrp -R 0 docker_cluster_ssh_mount
+echo "Generated Auth Keys for Docker Cluster: $PWD/${dir_name}_id_rsa.pub"
+echo "This will be shared with all docker containers."
+
+cd $cwd

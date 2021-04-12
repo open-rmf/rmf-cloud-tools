@@ -1,0 +1,32 @@
+FROM       ubuntu:focal
+MAINTAINER Charayaphan Nakorn Boon Han "https://github.com/cnboonhan"
+
+RUN apt update
+
+RUN apt install -y apt-utils debconf-utils dialog RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
+RUN apt install -y resolvconf
+RUN apt install -y openssh-server
+RUN apt install -y sshpass
+RUN apt install -y iproute2 
+RUN apt install -y iptables
+RUN apt install -y vim
+
+RUN mkdir /var/run/sshd
+
+RUN echo 'root:root' | chpasswd
+
+RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin without-password/' /etc/ssh/sshd_config
+RUN sed -ri 's/^#?PasswordAuthentication\s+.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+RUN mkdir -p /root/.ssh 
+RUN chown -R root:root /root/.ssh
+RUN chmod 700 /root/.ssh
+
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+EXPOSE 22
+
+CMD    ["/usr/sbin/sshd", "-D"]

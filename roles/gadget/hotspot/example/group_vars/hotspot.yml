@@ -1,0 +1,7 @@
+---
+hotspot_ip: 10.42.29.1
+hotspot_ip_dhcp_start: 10.42.29.2
+hotspot_ip_dhcp_end: 10.42.29.20
+hotspot_netmask: 255.255.255.0
+hotspot_subnet: 24
+hotspot_dns: 8.8.8.8

@@ -1,0 +1,10 @@
+---
+wireguard_subnet: 24
+wireguard_network_port: 51820
+wireguard_network_interface: wg0
+external_dns: 8.8.8.8
+wireguard_path: "/etc/wireguard"
+
+server_name: server_0
+server_wireguard_ip: 10.0.0.1
+wireguard_allowed_ips: 10.0.0.0/24

@@ -1,0 +1,9 @@
+[Interface]
+Address = {{ server_wireguard_ip }}/{{ wireguard_subnet }}
+PrivateKey = {{ wg_server_privatekey['content'] | b64decode | replace('
+', '')}}
+ListenPort = {{ wireguard_network_port }}
+PostUp = iptables -A FORWARD -i {{ wireguard_network_interface }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ external_network_interface }} -j MASQUERADE; ping {{ server_wireguard_ip }} &
+PostDown = iptables -D FORWARD -i {{ wireguard_network_interface }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ external_network_interface }} -j MASQUERADE; pkill ping
+
+

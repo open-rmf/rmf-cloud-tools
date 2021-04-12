@@ -1,0 +1,41 @@
+- name: create wireguard server config dir on central
+  delegate_to: central
+  file:
+    path: "{{ wireguard_workspace_path }}/server/{{ inventory_hostname }}"
+    state: directory
+    recurse: yes
+  register: wg_server_dir
+
+- name: generate wireguard server keypair
+  delegate_to: central
+  shell: |
+    if [ ! -f {{ wg_server_dir.path }}/privatekey ]
+     then
+      umask 077 && wg genkey | tee {{ wg_server_dir.path }}/privatekey | wg pubkey > {{ wg_server_dir.path }}/publickey
+    fi
+    exit 0
+
+- name: get wireguard server private key
+  delegate_to: central
+  slurp:
+    src: "{{ wg_server_dir.path }}/privatekey"
+  register: wg_server_privatekey
+
+- name: get wireguard server public key
+  delegate_to: central
+  slurp:
+    src: "{{ wg_server_dir.path }}/publickey"
+  register: wg_server_publickey
+
+- name: generate wireguard server config
+  delegate_to: central
+  delegate_facts: true
+  template:
+    src: "wg-server.j2"
+    dest: "{{ wg_server_dir.path }}/{{ wireguard_network_interface }}.conf"
+    mode: 0644
+
+
+
+
+

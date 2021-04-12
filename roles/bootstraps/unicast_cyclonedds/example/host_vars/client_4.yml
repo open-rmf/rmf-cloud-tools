@@ -1,0 +1,7 @@
+---
+dds_ip: 10.0.0.5
+cycloneddsxml_path: "/root"
+dds_network_interface: wg0
+
+
+

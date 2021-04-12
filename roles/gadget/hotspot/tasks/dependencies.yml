@@ -1,0 +1,77 @@
+#---
+- name: Stop unattended updates, if running
+  ansible.builtin.systemd:
+    name: unattended-upgrades
+    state: stopped
+  become: yes
+  ignore_errors: yes
+
+- name: stop dnsmasq if its already running
+  service:
+    name: dnsmasq 
+    masked: no
+    state: stopped 
+  become: yes
+  ignore_errors: yes
+
+- name: Pause for 2 seconds for dnsmasq to go down
+  pause:
+    seconds: 2
+
+- name: stop hostapd if its already running
+  service:
+    name: hostapd
+    masked: no
+    state: stopped 
+  become: yes
+  ignore_errors: yes
+
+- name: Enable DNS on resolved
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^DNSStubListener=no'
+    line: '#DNSStubListener=no'
+  become: yes
+
+- name: start systemd-resolved
+  service:
+    name: systemd-resolved
+    masked: no 
+    state: restarted 
+  become: yes
+
+- name: Add temporary nameserver if not existing
+  lineinfile:
+    path: /etc/resolv.conf
+    line: 'nameserver 8.8.8.8'
+  become: yes
+
+- name: Add etc/hosts entry 
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.0.1 {{ ansible_user }}'
+  become: yes
+
+- name: Fix any broken packages
+  shell: "dpkg --configure -a"
+  become: yes
+
+- name: Update aptitude
+  apt:
+    upgrade: full
+  become: yes
+
+- name: Install dependencies
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+    - dnsmasq
+    - hostapd
+    - iptables
+    - apt-utils
+    - iproute2
+    - iputils-ping
+  become: yes
+

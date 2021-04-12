@@ -1,0 +1,15 @@
+[hosts]
+central     ansible_user=ubuntu   ansible_host=127.0.0.1        ansible_connection=ssh 
+client_1    ansible_user=root     ansible_host=192.168.29.11    ansible_connection=ssh
+client_2    ansible_user=root     ansible_host=192.168.29.12    ansible_connection=ssh
+client_3    ansible_user=root     ansible_host=192.168.29.13    ansible_connection=ssh
+client_4    ansible_user=root     ansible_host=192.168.29.14    ansible_connection=ssh
+server_0    ansible_user=root     ansible_host=192.168.29.10    ansible_connection=ssh
+
+[peers]
+client_1
+client_2
+client_3
+client_4
+server_0
+
