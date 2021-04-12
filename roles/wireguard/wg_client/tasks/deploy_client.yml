@@ -1,0 +1,138 @@
+---
+- name: Get list of files to copy 
+  delegate_to: central
+  shell: "find {{ wireguard_workspace_path }}/client/{{ inventory_hostname }} -type f"
+  register: wireguard_client_files
+
+- name: create temporary storage folder on localhost for copying
+  delegate_to: localhost 
+  file:
+    path: "/tmp/{{ wireguard_workspace_path | basename }}/client/{{ inventory_hostname }}/"
+    state: directory
+  register: wireguard_client_files_local_temp_dir
+
+- name: Fetch files to localhost temporarily
+  delegate_to: central
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ wireguard_client_files_local_temp_dir.path }}"
+    flat: true
+  with_items: "{{ wireguard_client_files.stdout_lines }}"
+
+- name: deploy wireguard client config
+  copy:
+    src: "{{ wireguard_client_files_local_temp_dir.path }}/{{ item | basename }}"
+    dest: "{{ wireguard_path }}"
+    group: root
+    mode: '0600'
+  with_items: "{{ wireguard_client_files.stdout_lines }}"
+  become: true
+
+- name: get wireguard client public key
+  delegate_to: central
+  slurp:
+    src: "{{ wireguard_client_files_local_temp_dir.path }}/publickey"
+  register: wg_client_publickey
+
+- name: update server(s) with this client 
+  become: true
+  delegate_to: "{{ server_name }}"
+  delegate_facts: true
+  blockinfile:
+    path: "{{ wireguard_path }}/{{ wireguard_network_interface}}.conf"
+    marker: "# {mark} ANSIBLE MANAGED PEER {{ client_wireguard_ip }}"
+    block: |
+      [Peer]
+      PublicKey = {{ wg_client_publickey['content'] | b64decode | replace('', '') }}
+      AllowedIps = {{ client_wireguard_ip }}/32
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+
+- name: stop wireguard on server, if not systemctl
+  delegate_to: "{{ server_name }}"
+  delegate_facts: true
+  shell: /usr/bin/wg-quick down wg0 || /bin/true 
+  become: true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == false
+
+- name: stop wireguard service, if systemctl is available
+  delegate_to: "{{ server_name }}"
+  delegate_facts: true
+  service:
+    name: wg-quick@wg0.service
+    masked: no
+    state: stopped 
+    enabled: yes
+  become: yes
+  ignore_errors: yes
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == true
+
+- name: start wireguard on server
+  delegate_to: "{{ server_name }}"
+  delegate_facts: true
+  shell: /usr/bin/wg-quick up wg0 || /bin/true
+  become: true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == false
+
+- name: start wireguard service on server, if systemctl is available
+  delegate_to: "{{ server_name }}"
+  delegate_facts: true
+  service:
+    name: wg-quick@wg0.service
+    masked: no
+    state: started
+    enabled: yes
+  become: yes
+  ignore_errors: yes
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == true
+
+- name: Wait for a few seconds for server
+  wait_for:
+    timeout: 2
+  delegate_to: localhost
+
+- name: stop wireguard, if no systemctl
+  shell: /usr/bin/wg-quick down wg0 || /bin/true 
+  become: true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == false
+
+- name: stop wireguard service, if systemctl is available
+  service:
+    name: wg-quick@wg0.service
+    masked: no
+    state: stopped 
+    enabled: yes
+  become: yes
+  ignore_errors: yes
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == true
+
+- name: start wireguard on server
+  shell: /usr/bin/wg-quick up wg0 || /bin/true
+  become: true
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == false
+
+- name: start wireguard service on server, if systemctl is available
+  service:
+    name: wg-quick@wg0.service
+    masked: no
+    state: started
+    enabled: yes
+  become: yes
+  ignore_errors: yes
+  vars:
+      ansible_python_interpreter: /usr/bin/python3
+  when: has_systemctl == true

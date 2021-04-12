@@ -1,0 +1,16 @@
+---
+# peers 
+dds_ip: 10.0.0.2
+cycloneddsxml_path: "/home/ubuntu"
+dds_network_interface: wg0
+
+# ros2
+ros2_installation_type: ros-base
+dds_network_interface: wg0
+
+# wg_client
+client_wireguard_ip: 10.0.0.2
+has_systemctl: true
+
+
+

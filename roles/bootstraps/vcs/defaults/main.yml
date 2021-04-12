@@ -1,0 +1,5 @@
+---
+ros2_distribution: foxy
+ros2_setup_file: /opt/ros/foxy/setup.bash
+ros2_build_command: colcon build
+

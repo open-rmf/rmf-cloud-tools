@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+cwd=$PWD
+script_path=$(dirname $(realpath "$0"))
+echo $script_path
+
+cd $script_path
+ssh-add $script_path/auth/terraform_node_id_rsa
+
+terraform init
+ssh-add $script_path/auth/terraform_node_id_rsa 
+
+terraform apply | tee terraform_node_details
+
+
+echo "You can find your server information in $script_path/terraform_node_details"
+echo "To teardown server, run terraform destroy in $script_path"
+
+cd $cwd
+
+
+

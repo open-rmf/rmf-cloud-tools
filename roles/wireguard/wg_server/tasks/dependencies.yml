@@ -1,0 +1,19 @@
+---
+- name: Update aptitude
+  apt:
+    upgrade: full
+  become: yes
+
+- name: Install dependencies for basic connectivity
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+    - wireguard
+    - wireguard-tools
+    - iproute2
+    - iputils-ping
+    - openresolv
+  become: yes
+

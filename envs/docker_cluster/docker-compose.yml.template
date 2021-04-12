@@ -1,0 +1,19 @@
+version: "3.9"
+
+networks:
+  node_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: $LAN_CONFIG
+    driver_opts:
+      com.docker.network.bridge.name: cluster_net
+
+volumes:
+  docker_cluster_ssh_volume:
+    driver: local
+    driver_opts:
+      o: bind 
+      type: none
+      device: $script_path/auth/docker_cluster_ssh_mount

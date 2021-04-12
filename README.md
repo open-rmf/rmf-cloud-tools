@@ -1,84 +1,89 @@
 # rmf-cloud-tools
-Deployment tools for using RMF in clouds
+
+Various automated hardware-in-the-loop setups and demos, using [Red Hat Ansible](https://www.ansible.com/).
 
 
-!!! :warning: Warning/Achtung this is extremely unstable at the moment !!!
+## Required Setup
+The following documents a few ways to quickly get things up and running. For running the examples in this repo, there are provided `docker-compose` setups that take care of the Networking and Deploy Setups for you, so only the Central setup is required. Have a look a the [envs](envs) folder for more details.
 
+### Central Setup
+On your Ansible device where you control deployment (we will call it `central` for convention):
 
-# Current Status
-This shows a proof-of-concept deployment of ROS2 Foxy in the cloud 
-via FastRTPS middleware.
+* [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-on-ubuntu)
+* [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli), if you want to run the provided demo cloud infrastructure.
+* [Docker](https://docs.docker.com/engine/install/debian/) and [Docker Compose](https://docs.docker.com/compose/install/), if you want to run the provided local infrastructure. Remember to run the [post-install steps](https://docs.docker.com/engine/install/linux-postinstall/).
 
-# Usage
-You will need to have [terraform](https://www.terraform.io/) and 
-[aws cli](https://aws.amazon.com/cli/) installed. You will also need
-to have wireguard-tools installed. on ubuntu this is as simple as:
-```shell
-sudo apt install wireguard-tools
-```
+An [installation script](setup/central_init.bash) is provided to install all the above on Ubuntu 20.04. You will need to run it as `sudo`. 
 
-To provision a server simply run the following commands:
-```shell
-ruby generate_configs.rb 1 # 1 refers to the number of clients.
-```
-
-This will create a folder called `scripts` and another folder called `clients`.
-The scripts folder contains all the information required to provision a VM via
-`cloud-init`. While the `clients` folder contains everything needed for the
-clients (more on that later).
-
-## Testing VPN on the client
-To test the VPN simply provision a client vm. In particular we will spawn a client
-VM. You will need [vagrant](https://www.vagrantup.com/) to do this.
-This is as simple as the following:
-```
-cd clients/client_1
-vagrant up
-vagrant ssh
-```
-This will drop you into a client shell. To test the connection to the server
-one can simply run the following:
-```
-sudo wg0
-```
-We can try to ping the server
-```
-ping 10.200.200.1
-```
-Once done testing your client out exit and clean up your clientvm:
-```
-vagrant destroy
-```
-You may also clean up the cloud instances by running.
-```
-cd terraform/
-terraform destroy
-```
-## Setting up ROS2 connection (via FASTRTPS)
-
-Wireguard does not allow for multi-cast, hence we need to have a special configuration
-for Fast-RTPS. The config file is generated once the IPs have been allocated by
-Terraform. To inspect the config you may ssh into the server and enter:
+*Please check the script before running it to make sure it doesn't affect your local setup.*
 
 ```
-cat $FASTRTPS_DEFAULT_PROFILES_FILE
+sudo bash setup/central_init.bash 2>&1 | tee .logs_central_init
 ```
 
-Its trivial to set up a ROS 2 based connection over the network. On the server one can
-simply run:
-```
-ros2 topic pub /talker  std_msgs/String "data: Hello"
-```
-On the client VM one can run the usual:
-```
-ros2 topic echo /talker
-```
-## Scaling up
-Use chef. [TODO explain how]
+### Networking Setup
+You will have to connect to your deployment machines (we will call them `deploys` for convention). You have many options to do so, but here are a few one-shot ways for convenience. Note that however you choose to connect, these links should not be modified by Ansible using deployments. Otherwise, the modifications could disrupt the Ansible deployment.
 
-## TODO
-* Make region configureable.
-* Make clients configureable.
-* Make IP namespace configureable.
-* Generate G-Pi images
-* Bridge network
+#### Local Hotspot
+You can create a hotspot on your `central`, which your `deploys` will connect to. We will use DHCP to dynamically assign IP addresses to your `deploys`. Be wary of the network interface you use to create the hotspot: Some dongles have bad Linux compatibility, so YMMV.
+
+```
+# Configure the hotspot
+LAN_IFACE             # Internet where hotspot will be broadcast
+LAN_SSID              # Hotspot SSID
+LAN_PASSPHRASE        # Hotspot Password
+INTERNET_IFACE=eth0   # (optional) Link with internet, if you want to share
+
+# Important to run sudo with -E, so your above settings are used
+LAN_IFACE=wlan0 LAN_SSID=central_hotspot LAN_PASSPHRASE=password INTERNET_IFACE=eth0 sudo -E bash setup/central_hotspot_setup.bash
+```
+Your devices can now connect to the hotspot. The default settings connect up to 20 devices.
+
+More hotspot configuration options available, have a look at the hostapd/dnsmasq configuration files or the [hotspot setup script](setup/central_hotspot_setup.bash)
+
+#### LAN
+You can connect your `central` with your `deploys` over a wired LAN. If you have a router, IP address configurations should already be done for you. Otherwise, you will need to set up a DHCP server on your `central` to assign the IP addresses. Alternatively, all devices can be set up with static IP addresses.
+
+Assuming you have to set up a DHCP server:
+
+```
+# Configure the hotspot
+# LAN_IFACE                # Interface from central to deploy cluster
+# INTERNET_IFACE           # (optional) Link with internet, if you want to share
+
+# Important to run sudo with -E, so your above settings are used
+LAN_IFACE=eth0 INTERNET_IFACE=eth1 sudo -E bash setup/central_lan_setup.bash
+```
+
+Your devices should get IP addresses on this LAN. The default settings connect up to 20 devices.
+
+More LAN configuration options available, have a look at the dnsmasq configuration files or the [lan setup script](setup/central_lan_setup.bash)
+
+#### Networking Mapping
+You can now make a map of your network, in order to identify which devices correspond to which IP address. If you used static ip addressing, you will already know this. Otherwise, you can use the following helper methods, assuming you have exported the environmental variables as used above:
+
+```
+sudo apt install arp-scan -y
+sudo arp-scan --interface=$LAN_IFACE --localnet
+
+# Get only the ip addresses
+sudo arp-scan --interface=$LAN_IFACE --localnet| awk '{print $1}'|tail -n +3|head -n -2
+```
+
+### Deploy Setup
+Ensure that your `deploys` can be ssh-ed into, so on each `deploy`: `sudo apt install openssh-server`.
+
+#### SSH Keys
+You will ideally have SSH access to your `deploys` using passwordless (public-private keys) access. We will assume this for all examples in this repo. To enable passwordless access for all your devices, run this from your `central` for each `deploy`:
+
+```
+ssh-copy-id [user]@[ip-address/hostname]
+```
+
+### Cloud Setup
+If you want to use cloud examples and demos, you will need to set up some credentials. For the example environment using Terraform, you will need to set up your AWS credentials ( After you install the AWS CLI )
+
+```
+aws configure
+```
+[More information for AWS](https://docs.aws.amazon.com/cli/latest/reference/configure/)

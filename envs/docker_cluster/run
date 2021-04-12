@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+export script_path=$(dirname $(realpath "$0"))
+
+export LAN_START_IP="${LAN_START_IP:-192.168.29.10}"
+export LAN_CONFIG="${LAN_START_IP%.*}.0/24"
+export LAN_NODE_COUNT="${LAN_NODE_COUNT:-2}"
+export DOCKER_IMAGE="${DOCKER_IMAGE:-docker_cluster/node.docker}"
+
+temp_docker_compose=$(mktemp)
+envsubst < $script_path/docker-compose.yml.template > $temp_docker_compose
+echo -e "services:" >> $temp_docker_compose
+
+for ((n=0;n<$LAN_NODE_COUNT;n++))
+do
+  echo """
+  node_$n:
+    container_name: node_$n
+    image: $DOCKER_IMAGE
+    volumes:
+      - $script_path/auth/docker_cluster_ssh_mount:/root/.ssh:ro
+    networks:
+      node_network:
+        ipv4_address: ${LAN_START_IP%.*}.$((${LAN_START_IP##*.} + $n))
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+""" >> $temp_docker_compose
+done
+
+echo -e "Docker Compose:"
+cat $temp_docker_compose
+
+echo -e "\nDocker Cluster Details: "
+echo -e "LAN_START_IP: $LAN_START_IP"
+echo -e "LAN_CONFIG: $LAN_CONFIG"
+echo -e "LAN_NODE_COUNT: $LAN_NODE_COUNT"
+
+
+read -p "Continue? [Yy] " -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  echo -e "\nAdding SSH key to keyring.."
+  ssh-agent 
+  ssh-add $script_path/auth/docker_cluster_id_rsa
+
+  docker-compose -f $temp_docker_compose up
+
+  read -p "Teardown Cluster? You will lose all your progress. [Yy] " -n 1 -r
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    docker-compose -f $temp_docker_compose down && docker volume rm tmp_docker_cluster_ssh_volume
+  fi
+
+else
+  echo -e "\nAbort."
+fi
