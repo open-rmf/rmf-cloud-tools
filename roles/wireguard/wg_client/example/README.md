@@ -1,5 +1,5 @@
 # wg_client
-Create a wireguard client on target device(s). Tested using the `docker_cluster` image.
+Create a wireguard client on target device(s). Tested using the `docker_cluster` environment.
 
 ## Setup
 You will first need to set up a wireguard server. If following the examples in this repo using `docker_cluster`, you should follow the instructions in `roles/wireguard/wg_server/example`.
