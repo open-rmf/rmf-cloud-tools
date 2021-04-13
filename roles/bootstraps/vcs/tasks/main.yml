@@ -42,7 +42,7 @@
     chdir: "{{ vcs_workspace_path }}"
 
 - name: get all rosdep dependencies
-  shell: "rosdep install --from-paths src --ignore-src --rosdistro {{ ros2_distribution }} -y"
+  shell: "rosdep install --from-paths src --ignore-src --rosdistro {{ ros2_distribution }} -yr"
   args:
     chdir: "{{ vcs_workspace_path }}"
   ignore_errors: true
