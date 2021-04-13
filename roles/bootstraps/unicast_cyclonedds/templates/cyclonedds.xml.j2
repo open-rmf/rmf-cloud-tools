@@ -11,7 +11,7 @@
                 <Discovery>
                         <Peers>
                 {% for item in groups['peers'] %}
-                <Peer address="{{ dds_ip }}"/>
+                <Peer address="{{ hostvars[item]['dds_ip'] }}"/>
                 {% endfor %}
         </Peers>
                         <ParticipantIndex>auto</ParticipantIndex>
