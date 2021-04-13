@@ -19,7 +19,7 @@ fi
 
 read -p "Install Docker + Docker Compose? [Yy] " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  apt-get remove docker docker-engine docker.io containerd runc
+  apt-get remove docker docker-engine docker.io containerd runc || true
   apt update
   apt install apt-transport-https ca-certificates curl gnupg lsb-release -y
   curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
