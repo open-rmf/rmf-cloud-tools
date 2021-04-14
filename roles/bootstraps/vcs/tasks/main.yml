@@ -29,7 +29,6 @@
 
 - name: Update rosdep
   shell: 'rosdep update'
-  become: true 
 
 - name: Download vcs file
   shell: "wget {{ vcs_file }} -O {{ vcs_file | basename }}"
