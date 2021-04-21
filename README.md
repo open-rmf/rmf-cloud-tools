@@ -87,3 +87,18 @@ If you want to use cloud examples and demos, you will need to set up some creden
 aws configure
 ```
 [More information for AWS](https://docs.aws.amazon.com/cli/latest/reference/configure/)
+
+## Toolbox Structure
+The toolbox consists of the following sections:
+* [envs](envs): Tools to set up environments are provided, such as a Docker cluster meant to simulate a physical setup as described in the above README, as well as terraform templates for a cloud instance.
+* [roles](roles): Ansible roles which are assigned to various devices. Each role has a folder "example" with a minimal example demonstration tested using a provided [env](envs).
+* [demos](demos): A collection of examples of how to "layer" various roles on different devices.
+
+Each role is customized using configuration files, which follow the following convention (using the wg_server role as an example):
+* All hosts and their ip addresses are described in an [inventory file](roles/wireguard/wg_server/example/inventory)
+* Each role has a corresponding group named for it. In this case, it is "wg_server".
+* Variables that are reasonably expected to be common across all devices, and would not likely not cause issues invisibly if the user is not aware of them, are put in the [defaults](roles/wireguard/wg_server/defaults) folder.
+* Variables that should be common across all devices, but the user should be aware of them, are put in the [group_vars](roles/wireguard/wg_server/example/group_vars) folder.
+* Variables that are host specific, and the user should be aware of, are put in the [host_vars](roles/wireguard/wg_server/example/host_vars) folder.
+* The assignment of roles to hosts is found in the [playbook.yml](roles/wireguard/wg_server/example/playbook.yml).
+* Each example has a [run](roles/wireguard/wg_server/example/run) file which is provided to run it.
