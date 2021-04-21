@@ -6,33 +6,6 @@
   become: yes
   ignore_errors: yes
 
-- name: stop dnsmasq if its already running
-  service:
-    name: dnsmasq 
-    masked: no
-    state: stopped 
-  become: yes
-  ignore_errors: yes
-
-- name: Pause for 2 seconds for dnsmasq to go down
-  pause:
-    seconds: 2
-
-- name: stop hostapd if its already running
-  service:
-    name: hostapd
-    masked: no
-    state: stopped 
-  become: yes
-  ignore_errors: yes
-
-- name: Enable DNS on resolved
-  lineinfile:
-    path: /etc/systemd/resolved.conf
-    regexp: '^DNSStubListener=no'
-    line: '#DNSStubListener=no'
-  become: yes
-
 - name: start systemd-resolved
   service:
     name: systemd-resolved
@@ -67,5 +40,8 @@
     - apt-utils
     - iproute2
     - iputils-ping
+    - network-manager
+    - avahi-daemon
   become: yes
+
 

@@ -1,0 +1,3 @@
+---
+external_network_interface: eth0
+bridge_device_ip: 10.42.0.1

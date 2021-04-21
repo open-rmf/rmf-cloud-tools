@@ -1,0 +1,3 @@
+---
+wired_network_interface: eth0
+wireless_network_interface: wlan0

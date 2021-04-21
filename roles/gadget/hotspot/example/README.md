@@ -11,7 +11,7 @@ Create a hotspot on target device(s). Tested on a Raspberry Pi running Ubuntu Se
 
 You should now be able to run the runfile:
 ```
-bash envs/roles/wireguard/wg_client/example/run
+bash roles/wireguard/wg_client/example/run
 ```
 
 ## Results ( Under default configurations )
