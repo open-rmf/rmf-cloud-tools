@@ -1,5 +1,10 @@
+# max_auto_participant_index: In the case of DDS discovery being disabled, there is a limit to the maximum number of participants. If you encounter errors on cyclonedds, it is worth increasing this value. https://github.com/eclipse-cyclonedds/cyclonedds/blob/master/docs/manual/options.md#cycloneddsdomaindiscoverymaxautoparticipantindex
+# dds_network_interface: The network interface which DDS operates on
+# dds_ip: The IP address of the network interface which DDS operates on.
+# cycloneddsxml_path: The path where we install the cyclonedds.xml configuration file for this role
 ---
+max_auto_participant_index: 50             
+dds_network_interface: wg0             
 dds_ip: 10.0.0.2
 cycloneddsxml_path: "/root"
-dds_network_interface: wg0              # the network interface where dds is operating on
 

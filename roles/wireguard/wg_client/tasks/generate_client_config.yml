@@ -1,13 +1,13 @@
-- name: create wireguard client config dir on central
-  delegate_to: central
+- name: create wireguard client config dir on controller
+  delegate_to: controller
   file:
     path: "{{ wireguard_workspace_path }}/client/{{ inventory_hostname }}"
     state: directory
     recurse: yes
   register: wg_client_dir
 
-- name: get wireguard server config dir on central
-  delegate_to: central
+- name: get wireguard server config dir on controller
+  delegate_to: controller
   file:
     path: "{{ wireguard_workspace_path }}/server/{{ server_name }}"
     state: directory
@@ -15,7 +15,7 @@
   register: wg_server_dir
 
 - name: generate wireguard keypair
-  delegate_to: central
+  delegate_to: controller
   shell: |
     if [ ! -f {{ wg_client_dir.path }}/privatekey ]
      then
@@ -24,19 +24,19 @@
     exit 0
 
 - name: get wireguard client private key
-  delegate_to: central
+  delegate_to: controller
   slurp:
     src: "{{ wg_client_dir.path }}/privatekey"
   register: wg_client_privatekey
 
 - name: get wireguard server public key
-  delegate_to: central
+  delegate_to: controller
   slurp:
     src: "{{ wg_server_dir.path }}/publickey"
   register: wg_server_publickey
 
 - name: generate wireguard client config
-  delegate_to: central
+  delegate_to: controller
   delegate_facts: true
   template:
     src: "wg-client.j2"

@@ -1,4 +1,0 @@
----
-cycloneddsxml_path: "/home/ubuntu"
-max_auto_participant_index: 50              # In cases where DDS discovery is disabled, there is a limit to the maximum number of participants. If you encounter errors on cyclonedds, its worth increasing this value.
-

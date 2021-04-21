@@ -1,6 +1,6 @@
 ---
 - name: Get list of files to copy 
-  delegate_to: central
+  delegate_to: controller
   shell: "find {{ wireguard_workspace_path }}/server/{{ inventory_hostname }} -type f"
   register: wireguard_server_files
 
@@ -12,7 +12,7 @@
   register: wireguard_server_files_local_temp_dir
 
 - name: Fetch files to localhost temporarily
-  delegate_to: central
+  delegate_to: controller
   fetch:
     src: "{{ item }}"
     dest: "{{ wireguard_server_files_local_temp_dir.path }}"

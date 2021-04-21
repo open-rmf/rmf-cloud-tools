@@ -1,6 +1,19 @@
+# server_wireguard_ip: The ip address of this server on wireguard
+# external_network_interface: The network interface of this server to the rest of the network ( internet)
+# wireguard_network_interface: The network interface of wireguard 
+# wireguard_workspace_path: The workspace path on the controller where configuration files will be saved
+# wireguard_subnet: The numerical representation of this wireguard subnet
+# wireguard_network_port: The port on which wireguard will operate
+# wireguard_path: The path on the target devices where wireguard configurations will be installed
+# has_systemctl: If systemctl is present on the servers / clients, we will use it to revive the wireguard service on reboots. Otherwise, we default to using wg-quick, which does not persist across reboots.
+
+
 ---
 server_wireguard_ip: 10.0.0.1
 external_network_interface: eth0
 wireguard_network_interface: wg0
-has_systemctl: false
-
+wireguard_workspace_path: "/home/ubuntu/wireguard_ws"            
+wireguard_subnet: 24
+wireguard_network_port: 51820
+wireguard_path: "/etc/wireguard"                                
+has_systemctl: true

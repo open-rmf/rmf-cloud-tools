@@ -1,5 +1,5 @@
 [hosts]
-server_0 ansible_user=ubuntu ansible_host=192.168.29.10  ansible_connection=ssh
+localhost ansible_user=ubuntu ansible_host=127.0.0.1  ansible_connection=ssh
 
 [ros2]
 localhost

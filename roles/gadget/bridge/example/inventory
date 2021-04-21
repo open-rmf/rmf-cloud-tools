@@ -1,6 +1,6 @@
 [hosts]
-bridge_1 ansible_user=ubuntu ansible_host=192.168.0.164  ansible_connection=ssh
+bridge_0 ansible_user=ubuntu ansible_host=192.168.29.10  ansible_connection=ssh
 
 [bridge]
-bridge_1
+bridge_0
 

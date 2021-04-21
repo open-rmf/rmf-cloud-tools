@@ -15,7 +15,7 @@ bash roles/wireguard/wg_client/example/run
 ```
 
 ## Results ( Under default configurations )
-A folder `wireguard_ws` should be created on your `central` home folder with generated wireguard configurations.
+A folder `wireguard_ws` should be created on your `controller` home folder with generated wireguard configurations.
 
 The devices in the `wg_client` group should have a working wireguard client configuration. The device specified as `server_name` should now also have its wireguard configuration correctly configured to add this client. From the device called `server_name`, you should be able to ping every device in the `client_group` by their wireguard ip.
 
