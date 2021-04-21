@@ -1,0 +1,7 @@
+---
+- include_tasks: dependencies.yml
+  tags: dependency_setup
+
+- include_tasks: deploy_config.yml
+  tags: config_setup
+
