@@ -1,5 +1,0 @@
----
-hotspot_ssid: hotspot_1
-hotspot_psk: password
-external_network_interface: eth0
-hotspot_network_interface: wlan0

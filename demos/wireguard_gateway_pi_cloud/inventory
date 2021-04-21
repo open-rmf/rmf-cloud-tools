@@ -1,11 +1,11 @@
 [hosts]
-central     ansible_user=ubuntu   ansible_host=127.0.0.1        ansible_connection=ssh 
+controller     ansible_user=ubuntu   ansible_host=127.0.0.1        ansible_connection=ssh 
 server_0    ansible_user=ubuntu   ansible_host=54.254.79.83     ansible_connection=ssh
 hotspot_1   ansible_user=ubuntu   ansible_host=192.168.29.17    ansible_connection=ssh
 
 
 [wg_client]
-central
+controller
 hotspot_1
 
 [wg_server]
@@ -15,15 +15,15 @@ server_0
 hotspot_1
 
 [vcs]
-central
+controller
 
 [ros2]
-central
+controller
 server_0
 hotspot_1
 
 [peers]
-central
+controller
 server_0
 hotspot_1
 

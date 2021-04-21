@@ -5,7 +5,7 @@ Install ROS2 on the target device(s). Tested on a localhost device with a user `
 ## Setup
 You should be able to run the runfile:
 ```
-bash envs/roles/bootstraps/vcs/example/run
+bash envs/roles/bootstraps/ros2/example/run
 ```
 
 ## Results ( Under default configurations )

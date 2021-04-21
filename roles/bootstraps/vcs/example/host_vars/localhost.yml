@@ -1,0 +1,29 @@
+# ros2_disbtribution: The ROS2 distribution you are targeting
+# ros2_setup_file: The path to the setup file you will source
+# vcs_workspace_path: The path where you want to build your vcs workspace
+# vcs_file: The http link which we will pull the .repos file from
+# additional_apts: Additional dependencies not specified by rosdep
+# additiona_pips: Additional python dependencies not specified by rosdep
+# ros2_build command: The command used to build this workspace. 
+---
+ros2_distribution: foxy
+ros2_setup_file: /opt/ros/foxy/setup.bash
+vcs_workspace_path: /home/ubuntu/ros2_ws
+vcs_file: https://raw.githubusercontent.com/open-rmf/rmf/main/rmf.repos
+additional_apts:                         
+  - python3-rosdep
+  - python3-pip
+  - git
+  - wget
+  - cmake
+  - python3-vcstool
+  - curl
+  - qt5-default
+  - python3-shapely
+  - python3-yaml
+  - python3-requests
+  - python3-flask-cors
+  - python3-colcon*
+additional_pips:
+  - flask-socketio
+ros2_build_command: colcon build

@@ -14,7 +14,7 @@ bash roles/wireguard/wg_server/example/run
 ```
 
 ## Results ( Under default configurations )
-A folder `wireguard_ws` should be created on your `central` home folder with generated wireguard configurations.
+A folder `wireguard_ws` should be created on your `controller` home folder with generated wireguard configurations.
 
 The `server_0` device should have a working wireguard server configuration. To be able to test this setup more fully, we should now add clients. You can find this in the `roles/wireguard/wg_client` folder.
 

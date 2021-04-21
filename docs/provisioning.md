@@ -1,5 +1,7 @@
-# envs
-Environment provisions to test and deploy playbooks from this repo.
+# provisioning
+Tutorials on provisioning infrastructure.
+
+TODO
 
 ## docker_cluster
 This environment will provision a given number of Docker containers automatically. This simulates a cluster of devices on a local network. You can use this to test out Ansible playbooks, or do other sorts of debugging.
@@ -48,3 +50,4 @@ bash envs/terraform_node/run
 # SSH in!
 ssh -i envs/terraform_node/auth/terraform_node_id_rsa ubuntu@[your-server-ip]
 ```
+

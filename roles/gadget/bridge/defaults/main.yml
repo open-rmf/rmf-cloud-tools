@@ -1,3 +1,0 @@
----
-wired_network_interface: eth0               # The interface that connects to your target device
-wireless_network_interface: wlan0           # The interface that connects to your wireless network

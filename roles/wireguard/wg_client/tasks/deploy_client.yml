@@ -1,6 +1,6 @@
 ---
 - name: Get list of files to copy 
-  delegate_to: central
+  delegate_to: controller
   shell: "find {{ wireguard_workspace_path }}/client/{{ inventory_hostname }} -type f"
   register: wireguard_client_files
 
@@ -12,7 +12,7 @@
   register: wireguard_client_files_local_temp_dir
 
 - name: Fetch files to localhost temporarily
-  delegate_to: central
+  delegate_to: controller
   fetch:
     src: "{{ item }}"
     dest: "{{ wireguard_client_files_local_temp_dir.path }}"
@@ -29,7 +29,7 @@
   become: true
 
 - name: get wireguard client public key
-  delegate_to: central
+  delegate_to: controller
   slurp:
     src: "{{ wireguard_client_files_local_temp_dir.path }}/publickey"
   register: wg_client_publickey

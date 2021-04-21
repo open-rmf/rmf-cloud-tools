@@ -1,6 +1,6 @@
 [hosts]
-central   ansible_user=ubuntu   ansible_host=127.0.0.1        ansible_connection=ssh 
-server_0  ansible_user=root     ansible_host=192.168.29.10    ansible_connection=ssh
+controller   ansible_user=ubuntu   ansible_host=127.0.0.1        ansible_connection=ssh 
+server_0     ansible_user=root     ansible_host=192.168.29.10    ansible_connection=ssh
 
 [wg_server]
 server_0

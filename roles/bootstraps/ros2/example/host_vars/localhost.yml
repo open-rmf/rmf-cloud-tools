@@ -1,2 +1,17 @@
+# ros2_gpg_key_url: The GPG Key URL 
+# ros2_repository_url: The url of the ros2 repository
+# ros2_distribution: The distribution of ROS2 you want to install
+# ros2_rmw_implementation: Goes into the RMW_IMPLEMENTATION variable for choosing which dds vendor to use
+# ros2_domain_id: DDS operating on different domain IDs cannot communicate. Use this to separate communication across different DDS instances
+# ros2_installation_type: ros-base installs basic values. ros-desktop installs the full ROS2 stack
+# cycloneddsxml_path: The path to install a cyclonedds configuration file, which we use by default
+# dds_network_interface: The network interfaec which we expect to operate DDS on. We will use wireguard in our examples
+---
+ros2_gpg_key_url: https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc            
+ros2_repository_url: http://packages.ros.org/ros2/ubuntu
+ros2_distribution: foxy
+ros2_rmw_implementation: rmw_cyclonedds_cpp          
+ros2_domain_id: 0
 ros2_installation_type: ros-base
-dds_network_interface: eth0               # The network interface on which dds communication is meant to happen
+cycloneddsxml_path: "/home/ubuntu"
+dds_network_interface: eth0              
