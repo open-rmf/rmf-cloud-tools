@@ -6,6 +6,6 @@ external_dns: 8.8.8.8
 wireguard_path: "/etc/wireguard"
 
 server_name: server_0
-server_wireguard_ip: 10.0.0.1
-wireguard_allowed_ips: 10.0.0.0/24
+server_wireguard_ip: 10.0.0.1                 # The servers ip address w.r.t wireguard VPN
+wireguard_allowed_ips: 10.0.0.0/24            # The ip addresses that are handled by the wireguard VPN on the client.
 has_systemctl: true

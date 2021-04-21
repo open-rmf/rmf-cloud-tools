@@ -1,7 +1,8 @@
 ---
 dds_ip: 10.0.0.3
 cycloneddsxml_path: "/root"
-dds_network_interface: wg0
+dds_network_interface: wg0              # the network interface where dds is operating on
+
 
 
 

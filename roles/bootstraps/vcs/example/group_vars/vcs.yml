@@ -1,7 +1,7 @@
 ---
 vcs_workspace_path: /home/ubuntu/ros2_ws
 vcs_file: https://raw.githubusercontent.com/open-rmf/rmf/main/rmf.repos
-additional_apts:
+additional_apts:                          # Dependencies aside from rosdep installable stuff
   - python3-rosdep
   - python3-pip
   - git

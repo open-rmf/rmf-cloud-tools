@@ -1,2 +1,2 @@
 ---
-bridge_dns: 8.8.8.8
+bridge_dns: 8.8.8.8             # The DNS server that your device will contact 
