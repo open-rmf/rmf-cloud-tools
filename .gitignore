@@ -2,4 +2,4 @@ tags
 *.swp
 *.swo
 .logs*
-
+.vscode
