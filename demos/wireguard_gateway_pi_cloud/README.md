@@ -49,4 +49,40 @@ You can try running the office demo from `central` and see that other devices ca
 ros2 launch rmf_demos office.launch.xml
 ```
 
+## Modifying this example
+Here are some things you can do to modify this example to suit your setup.
 
+### Change your server_0 host ip address
+Modify the [inventory](./inventory) line 2, ansible_host to your devices ip address.
+
+### Assign more hotspots
+Modify the [inventory](./inventory) by adding a new host under [hosts]. For example
+
+```
+hotspot_2 ansible_user=ubuntu ansible_host=192.168.29.20  ansible_connection=ssh
+```
+
+Add the device name ( in this case `hotspot_2` ) to the corresponding roles. For example: [wg_client], [ros2], [peers].
+
+Add a new file `hotspot_2.yaml` in the `host_vars` folder, modifying as appropriate from `hotspot_1.yaml`. For example:
+```
+---
+# hotspot
+hotspot_ssid: hotspot_2
+hotspot_psk: password
+external_network_interface: eth0
+hotspot_network_interface: wlan0
+
+# peers 
+dds_ip: 10.0.0.4
+cycloneddsxml_path: "/home/ubuntu"
+dds_network_interface: wg0
+
+# ros2
+ros2_installation_type: ros-base
+dds_network_interface: wg0
+
+# wg_client
+client_wireguard_ip: 10.0.0.4
+has_systemctl: true
+```
