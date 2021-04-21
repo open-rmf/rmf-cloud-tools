@@ -1,2 +1,2 @@
 ros2_installation_type: ros-base
-dds_network_interface: eth0
+dds_network_interface: eth0               # The network interface on which dds communication is meant to happen

@@ -1,5 +1,5 @@
 ---
 ros2_distribution: foxy
 ros2_setup_file: /opt/ros/foxy/setup.bash
-ros2_build_command: colcon build
+ros2_build_command: colcon build                    # The command used to build a ros2 workspace. You can add more arguments, such as --symlink-install
 

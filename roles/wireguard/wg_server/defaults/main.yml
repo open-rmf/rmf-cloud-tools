@@ -1,9 +1,9 @@
 ---
-wireguard_workspace_path: "/home/ubuntu/wireguard_ws"
+wireguard_workspace_path: "/home/ubuntu/wireguard_ws"             # The workspace on the central device, where we will generate wireguard configuration files
 wireguard_subnet: 24
 wireguard_network_port: 51820
-external_network_interface: eth0
-wireguard_network_interface: wg0
-wireguard_path: "/etc/wireguard"
+external_network_interface: eth0                                  # The interface on the server which accesses the rest of the network ( the internet, for cloud servers )
+wireguard_network_interface: wg0                                  # The name of the interface that is used by wireguard
+wireguard_path: "/etc/wireguard"                                  # The path where we will instance wireguard configuration files
 has_systemctl: true
 

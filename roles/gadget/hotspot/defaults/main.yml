@@ -6,5 +6,5 @@ hotspot_netmask: 255.255.255.0
 hotspot_subnet: 24
 hotspot_dns: 8.8.8.8
 hotspot_psk: password
-external_network_interface: eth0
-hotspot_network_interface: wlan0
+external_network_interface: eth0                # The "upstream" network interface, which may have internet access
+hotspot_network_interface: wlan0                # The hotspot network interface 
