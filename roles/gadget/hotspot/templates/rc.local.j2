@@ -20,9 +20,9 @@ fi
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
-iptables -t nat -A POSTROUTING -o {{ external_network_interface }} -j MASQUERADE
-iptables -A FORWARD -i {{ external_network_interface }} -o {{ hotspot_network_interface }} -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i {{ hotspot_network_interface }} -o {{ external_network_interface }} -j ACCEPT
+iptables -t nat -A POSTROUTING -o {{ hotspot_external_network_interface }} -j MASQUERADE
+iptables -A FORWARD -i {{ hotspot_external_network_interface }} -o {{ hotspot_network_interface }} -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i {{ hotspot_network_interface }} -o {{ hotspot_external_network_interface }} -j ACCEPT
 
 ip route del default via {{ hotspot_ip }}
 
