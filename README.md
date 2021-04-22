@@ -32,3 +32,6 @@ Due to limitations of automation and the need to customize infrastructure to you
 
 ## Feedback
 We are always looking for ways to improve. Do place an issue whenever you find a bug or think of better solutions, so we can improve this document together.
+
+## Glossary
+[Here](/Glossary.md) we compile a list of terms which might need explanation for those new to ROS2 / RMF / this repository. Do suggest adding more terms here where useful.
