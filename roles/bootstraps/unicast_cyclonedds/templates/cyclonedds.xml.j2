@@ -2,7 +2,7 @@
 <CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
         <Domain id="any">
                 <General>
-                        <NetworkInterfaceAddress>{{ dds_network_interface }}</NetworkInterfaceAddress>
+                        <NetworkInterfaceAddress>{{ unicast_cyclonedds_dds_network_interface }}</NetworkInterfaceAddress>
                         <AllowMulticast>false</AllowMulticast>
                         <MaxMessageSize>65500B</MaxMessageSize>
                         <FragmentSize>4000B</FragmentSize>
@@ -11,11 +11,11 @@
                 <Discovery>
                         <Peers>
                 {% for item in groups['peers'] %}
-                <Peer address="{{ hostvars[item]['dds_ip'] }}"/>
+                <Peer address="{{ hostvars[item]['unicast_cyclonedds_dds_ip'] }}"/>
                 {% endfor %}
         </Peers>
                         <ParticipantIndex>auto</ParticipantIndex>
-                        <MaxAutoParticipantIndex>{{ max_auto_participant_index }}</MaxAutoParticipantIndex>
+                        <MaxAutoParticipantIndex>{{ unicast_cyclonedds_max_auto_participant_index }}</MaxAutoParticipantIndex>
                 </Discovery>
                 <Internal>
                         <Watermarks>

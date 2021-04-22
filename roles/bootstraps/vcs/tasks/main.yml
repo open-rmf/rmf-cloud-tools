@@ -6,13 +6,13 @@
 
 - name: Install additonal apt dependencies
   apt:
-    name: "{{ additional_apts }}"
+    name: "{{ vcs_additional_apts }}"
     update_cache: true
   become: true
 
 - name: Intall additional pip dependencies
   pip:
-    name: "{{ additional_pips }}"
+    name: "{{ vcs_additional_pips }}"
     executable: "/usr/bin/pip3"
 
 - name: create vcs workspace
@@ -41,13 +41,13 @@
     chdir: "{{ vcs_workspace_path }}"
 
 - name: get all rosdep dependencies
-  shell: "rosdep install --from-paths src --ignore-src --rosdistro {{ ros2_distribution }} -yr"
+  shell: "rosdep install --from-paths src --ignore-src --rosdistro {{ vcs_ros2_distribution }} -yr"
   args:
     chdir: "{{ vcs_workspace_path }}"
   ignore_errors: true
 
 - name: colcon build
-  shell: "source {{ ros2_setup_file }} && {{ ros2_build_command }}"
+  shell: "source {{ vcs_ros2_setup_file }} && {{ vcs_ros2_build_command }}"
   args:
     chdir: "{{ vcs_workspace_path }}"
     executable: "/bin/bash"

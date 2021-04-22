@@ -1,10 +1,10 @@
-# wired_network_interface: the network interface that connects over ethernet to your device
-# wireless_network_interface: The network interface which connects to the wireless network
-# The ip address of your target device, with respect to the pi bridge
+# bridge_wired_network_interface: the network interface that connects over ethernet to your device
+# bridge_wireless_network_interface: The network interface which connects to the wireless network
+# bridge_device_ip: The ip address of your target device, with respect to the pi bridge
 # bridge_dns: The nameserver that your device will contact for DNS resolution
 ---
-wired_network_interface: eth0              
-wireless_network_interface: wlan0          
+bridge_wired_network_interface: eth0              
+bridge_wireless_network_interface: wlan0          
 bridge_device_ip: 10.42.0.1                
 bridge_dns: 8.8.8.8   
 

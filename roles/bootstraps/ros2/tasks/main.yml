@@ -83,7 +83,7 @@
 - name: Generate CycloneDDS config
   template:
     src: "cyclonedds.xml.j2"
-    dest: "{{ cycloneddsxml_path }}/cyclonedds.xml"
+    dest: "{{ ros2_cycloneddsxml_path }}/cyclonedds.xml"
 
 - name: Update source environment
   lineinfile:
@@ -105,7 +105,7 @@
 - name: Update to use CycloneDDS config
   lineinfile:
     path: ~/.bashrc
-    line: "export CYCLONEDDS_URI=file://{{ cycloneddsxml_path }}/cyclonedds.xml"
+    line: "export CYCLONEDDS_URI=file://{{ ros2_cycloneddsxml_path }}/cyclonedds.xml"
   when: (ros2_rmw_implementation == "rmw_cyclonedds_cpp")
 
 
