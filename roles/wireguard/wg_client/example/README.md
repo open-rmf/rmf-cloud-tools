@@ -23,5 +23,5 @@ The devices in the `wg_client` group should have a working wireguard client conf
 ## Further customization
 You can further customize the configuration by changing variable assignments in the setup configuration files. This [link](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#group-variables) might help with understanding the configuration file structure in Ansible.
 
-You can find information about the conventions used for configuration files in the [main README](/README.md#toolbox-structure).
+You can find information about the conventions used for configuration files in the [ansible primer](/docs/ansible_primer.md#Conventions).
 

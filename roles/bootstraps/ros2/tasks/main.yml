@@ -2,48 +2,45 @@
 - name: Update aptitude
   apt:
     upgrade: full
-    #update_cache: yes
-    #autoclean: yes
-    #autoremove: yes
-  become: yes
+    update_cache: true
+  become: true
 
 - name: Install iproute2
   apt:
     name: "iproute2"
     state: present
-  become: yes
+  become: true
 
 - name: Install iputils-ping
   apt:
     name: "iputils-ping"
     state: present
-  become: yes
+  become: true
 
-# sudo apt update && sudo apt install curl gnupg2 lsb-release
 - name: Install dependencies for setting up sources
   apt:
     name: "{{ packages }}"
-    update_cache: yes
+    update_cache: true
   vars:
     packages:
     - curl
     - gnupg2
     - lsb-release
     - apt-utils
-  become: yes
+  become: true
 
 - name: Setup ROS2 keys
   apt_key:
     url: "{{ ros2_gpg_key_url }}"
     state: present
-  become: yes
+  become: true
 
 - name: Setup ROS2 sources
   apt_repository:
     repo: "deb {{ ros2_repository_url }} {{ ansible_distribution_release }} main"
     state: present
     filename: ros2-latest
-  become: yes
+  become: true
 
 - name: add gazebo packages
   shell: "echo \"deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main\" > /etc/apt/sources.list.d/gazebo-stable.list"
@@ -58,32 +55,33 @@
 - name: Install ROS2
   apt:
     name: "{{ packages }}"
-    update_cache: yes
+    update_cache: true
   vars:
     packages:
       - "{{ 'ros-' + ros2_distribution + '-' + ros2_installation_type }}"
-  become: yes
+  become: true
 
 - name: Install CycloneDDS
   apt:
     name: "ros-{{ ros2_distribution }}-rmw-cyclonedds-cpp"
-    update_cache: yes
-  become: yes
+    update_cache: true
+  become: true
 
 - name: Install argcomplete
   apt:
     name: python3-argcomplete
-  become: yes
+  become: true
 
 - name: Install colcon to build packages
   apt:
     name: python3-colcon-common-extensions
-  become: yes
+  become: true
 
 - name: Generate CycloneDDS config
   template:
     src: "cyclonedds.xml.j2"
     dest: "{{ ros2_cycloneddsxml_path }}/cyclonedds.xml"
+  become: true
 
 - name: Update source environment
   lineinfile:
