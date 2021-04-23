@@ -71,7 +71,7 @@ LAN_DHCP_LOW: The start ip of the DHCP pool
 LAN_DHCP_HIGH: The end ip of the DHCP pool
 
 # Examples
-LAN_IFACE=enp3s0 bash controll_hotspot_setup.bash
+LAN_IFACE=enp3s0 bash controller_hotspot_setup.bash
 LAN_IFACE=wlan0 LAN_SSID=hotspot LAN_PASSPHRASE=hunter2 bash controller_hotspot_setup.bash
 ```
 
