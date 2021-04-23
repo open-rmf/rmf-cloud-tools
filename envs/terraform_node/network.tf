@@ -7,6 +7,11 @@ resource "aws_internet_gateway" "terraform_node" {
   vpc_id = aws_vpc.terraform_node.id
 }
 
+resource "aws_eip" "one" {
+  vpc = true
+  instance = aws_instance.terraform_node.id
+}
+
 resource "aws_route" "outbound_via_igw" {
   route_table_id = aws_vpc.terraform_node.default_route_table_id
   destination_cidr_block = "0.0.0.0/0"
@@ -50,4 +55,5 @@ resource "aws_security_group" "terraform_node" {
   }
   tags = var.standard_tags
 }
+
 

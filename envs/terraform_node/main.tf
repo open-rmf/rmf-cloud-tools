@@ -36,7 +36,6 @@ resource "aws_instance" "terraform_node" {
 }
 
 output "terraform_node_public_ip" {
-  value = aws_instance.terraform_node.public_ip
+  value = aws_eip.one.public_ip
 }
-
 
