@@ -3,7 +3,7 @@
 # https://askubuntu.com/questions/147241/execute-sudo-without-password
 
 [hosts]
-bridge_0 ansible_user=ubuntu ansible_host=192.168.29.10  ansible_connection=ssh 
+bridge_0 ansible_user=ubuntu ansible_host=192.168.50.18  ansible_connection=ssh ansible_sudo_pass=ubuntu
 
 [bridge]
 bridge_0
