@@ -1,7 +1,7 @@
 - name: create wireguard server config dir on controller
   delegate_to: controller
   file:
-    path: "{{ wireguard_workspace_path }}/server/{{ inventory_hostname }}"
+    path: "{{ wg_server_wireguard_workspace_path }}/server/{{ inventory_hostname }}"
     state: directory
     recurse: yes
   register: wg_server_dir
@@ -32,7 +32,7 @@
   delegate_facts: true
   template:
     src: "wg-server.j2"
-    dest: "{{ wg_server_dir.path }}/{{ wireguard_network_interface }}.conf"
+    dest: "{{ wg_server_dir.path }}/{{ wg_server_wireguard_network_interface }}.conf"
     mode: 0644
 
 

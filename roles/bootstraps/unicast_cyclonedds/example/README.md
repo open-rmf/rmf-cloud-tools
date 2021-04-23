@@ -1,6 +1,11 @@
 # unicast_cyclonedds
 
-Sometimes, you cannot rely on CycloneDDS default configuration, for example if going through Wireguard. This role will export a variant of CycloneDDS configurations that is compatible with unicast.
+Sometimes, you cannot rely on CycloneDDS default configuration, for example if going through Wireguard. This role will export a variant of CycloneDDS configurations that is compatible with unicast "discovery" mode of CycloneDDS.o
+
+Tested with a Docker Cluster setup with 5 nodes:
+```
+LAN_NODE_COUNT=5  bash envs/docker_cluster/run
+```
 
 ## Setup
 You should be able to run the runfile:
