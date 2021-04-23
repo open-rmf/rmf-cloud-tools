@@ -9,7 +9,7 @@
 # hotspot_subnet: The numerical representation of hotspot_netmask
 # hotspot_dns: The dns server that the device will contact for DNS resolution
 ---
-hotspot_ssid: hotspot_1
+hotspot_ssid: hotspot_0
 hotspot_psk: password
 hotspot_external_network_interface: eth0
 hotspot_network_interface: wlan0

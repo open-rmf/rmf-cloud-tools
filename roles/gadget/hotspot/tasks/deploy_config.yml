@@ -22,14 +22,6 @@
     mode: 0644
   become: yes
 
-- name: wired.network 
-  template:
-    src: 20-wired.network.j2
-    dest: /etc/systemd/network/20-wired.network
-    backup: true
-    mode: 0644
-  become: yes
-
 - name: dnsmasq.conf
   template:
     src: dnsmasq.conf.j2
@@ -52,22 +44,24 @@
     state: restarted
   become: yes
 
+- name: make networkmanager ignore hotspot interface
+  template:
+    src: nm-ignore-interface.rules.j2
+    dest: /etc/udev/rules.d/nm-ignore-interface.rules
+    backup: true
+    mode: 0644
+  become: yes
+
+- name: Load udev rules
+  shell: "udevadm control --reload-rules && udevadm trigger"
+  become: yes
+
 - name: restart networking
   service:
     name: systemd-networkd 
     masked: no
-    state: restarted
-  become: yes
-
-- name: rc.local
-  template:
-    src: rc.local.j2
-    dest: /etc/rc.local
-    backup: true
-  become: yes
-
-- name: restart rclocal
-  shell: "sh /etc/rc.local"
+    state: started
+    enabled: yes
   become: yes
 
 - name: disable wait online service
