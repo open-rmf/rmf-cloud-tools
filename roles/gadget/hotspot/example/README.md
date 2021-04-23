@@ -1,5 +1,5 @@
 # hotspot
-Create a hotspot on target device(s). Tested on a Raspberry Pi running Ubuntu Server 20.04.
+Create a hotspot on target device(s). Tested on a Raspberry Pi running Ubuntu Desktop 21.04.
 
 ## Setup
 * Flash a Raspberry Pi 4 with [Ubuntu Server 20.04](https://ubuntu.com/download/raspberry-pi).

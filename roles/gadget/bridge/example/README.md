@@ -1,10 +1,11 @@
 # bridge
-Create a "pi bridge" on target device. This bridge connects to a target device over a wired network interface. It then connects to a wifi access point over the wireless network interface. Then, it bridges the two interfaces such that you can interact with the pi bridge over the wifi network as if it was the downstream device. A Tested on a Raspberry Pi running Ubuntu Server 20.04.
+Create a "pi bridge" on target device. This bridge connects to a target device over a wired network interface. you can configure it to connect to a wifi access point over the wireless network interface. Then, it bridges the two interfaces such that you can interact with the pi bridge over the wifi network as if it was the downstream device. A Tested on a Raspberry Pi running Ubuntu Desktop 21.04.
 
 ## Setup
-* Flash a Raspberry Pi 4 with [Ubuntu Server 20.04](https://ubuntu.com/download/raspberry-pi).
-* Connect your Rpi your `controller` over Wifi as described in the root README.md. Don't use the wired network interface, as we will use it for configuration.
-* `ssh-copy-id [pi-user]@[pi-address]`  and try `ssh` to test your connection.
+* Flash a Raspberry Pi 4 with [Ubuntu Desktop 21.04](https://ubuntu.com/download/raspberry-pi). You can also flash the Server edition, but you will need to be familiar of operating without GUI.
+* Make sure that the device runs an ssh server: `sudo apt install openssh-server`.
+* Connect your Rpi your `controller` over a network interface thats not configured as its `wired_network_interface` as specified in its `host_vars` file. You can see the many ways to connect, as described in the [provisioning](/docs/provisioning.md) steps.
+* `ssh-copy-id [pi-user]@[pi-address]`  and try `ssh` to test your connection to make sure you have sudo access
 * Configure `inventory` file with the details of your new device. Also configure the `bridge_device_ip` with the ip address of the target device with respect to the pi bridge. In other words, the ip address you would use to ping the target device from the pi.
 * Try to make sure any automatic upgrades are already complete. You should be able to run `sudo apt update` on the Rpi without `apt-lock` errors.
 
@@ -13,6 +14,8 @@ You should now be able to run the runfile:
 ```
 bash roles/gadget/bridge/example/run
 ```
+
+* Finally, you can use NetworkManager, or any networking tool of your choice, to connect the bridge to your RMF network.
 
 
 ## Results ( Under default configurations )
