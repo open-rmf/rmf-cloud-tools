@@ -17,3 +17,4 @@ wg_server_wireguard_subnet: 24
 wg_server_wireguard_network_port: 51820
 wg_server_wireguard_path: "/etc/wireguard"                                
 wg_server_has_systemctl: false
+

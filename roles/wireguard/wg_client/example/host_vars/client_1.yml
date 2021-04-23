@@ -1,23 +1,22 @@
-# wireguard_workspace_path: Path to the workspace on the "controller" alias host where wireguard configurations will be generated
-# wireguard_subnet: The numerical representation of this wireguard network subnet
-# wireguard_network_port: The port on which wireguard will operate
-# wireguard_network_interface: The network interface for wireguard
-# external_dns: The IP address of the DNS server used by this deviec
-# wireguard_path: The path on the target devices where wireguard configurations will be installed
-# has_systectl: If systemctl is present on the servers / clients, we will use it to revive the wireguard service on reboots. Otherwise, we default to using wg-quick, which does not persist across reboots.
-# server_name: The alias for the host which is the server
-# server_wireguard_ip: The ip address of the server on wireguard
-# wireguard_allowed_ips: The ip addresses that are routed through wireguard on this client
+# wg_client_wireguard_workspace_path: Path to the workspace on the "controller" alias host where wireguard configurations will be generated
+# wg_client_wireguard_subnet: The numerical representation of this wireguard network subnet
+# wg_client_wireguard_network_port: The port on which wireguard will operate
+# wg_client_wireguard_network_interface: The network interface for wireguard
+# wg_client_external_dns: The IP address of the DNS server used by this deviec
+# wg_client_wireguard_path: The path on the target devices where wireguard configurations will be installed
+# wg_client_has_systectl: If systemctl is present on the servers / clients, we will use it to revive the wireguard service on reboots. Otherwise, we default to using wg-quick, which does not persist across reboots.
+# wg_client_server_name: The alias for the host which is the server
+# wg_client_server_wireguard_ip: The ip address of the server on wireguard
+# wg_client_wireguard_allowed_ips: The ip addresses that are routed through wireguard on this client
 ---
-wireguard_workspace_path: "/home/ubuntu/wireguard_ws"          
-wireguard_subnet: 24                                            
-wireguard_network_port: 51820
-wireguard_network_interface: wg0
-external_dns: 8.8.8.8
-wireguard_path: "/etc/wireguard"                               
-client_wireguard_ip: 10.0.0.2
-server_name: server_0
-server_wireguard_ip: 10.0.0.1                
-wireguard_allowed_ips: 10.0.0.0/24           
-has_systemctl: true
-
+wg_client_wireguard_workspace_path: "/home/ubuntu/wireguard_ws"          
+wg_client_wireguard_subnet: 24                                            
+wg_client_wireguard_network_port: 51820
+wg_client_wireguard_network_interface: wg0
+wg_client_external_dns: 8.8.8.8
+wg_client_wireguard_path: "/etc/wireguard"                               
+wg_client_client_wireguard_ip: 10.0.0.2
+wg_client_server_name: server_0
+wg_client_server_wireguard_ip: 10.0.0.1                
+wg_client_wireguard_allowed_ips: 10.0.0.0/24           
+wg_client_has_systemctl: false

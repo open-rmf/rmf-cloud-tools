@@ -4,6 +4,7 @@ script_path=$(dirname $(realpath "$0"))
 role_path=$(dirname $script_path)
 echo -e "Symlinking roles.."
 ln -sf $role_path $script_path
+ANSIBLE_HOST_KEY_CHECKING=false ansible hosts -m ping -i $script_path/inventory 
 ansible-playbook $script_path/playbook.yml -i $script_path/inventory
 echo -e "Clearing symlinks."
 find $script_path -type l -delete

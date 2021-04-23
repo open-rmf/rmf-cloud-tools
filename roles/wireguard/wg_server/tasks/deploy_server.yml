@@ -1,13 +1,13 @@
 ---
 - name: Get list of files to copy 
   delegate_to: controller
-  shell: "find {{ wireguard_workspace_path }}/server/{{ inventory_hostname }} -type f"
+  shell: "find {{ wg_server_wireguard_workspace_path }}/server/{{ inventory_hostname }} -type f"
   register: wireguard_server_files
 
 - name: create temporary storage folder on localhost for copying
   delegate_to: localhost 
   file:
-    path: "/tmp/{{ wireguard_workspace_path | basename }}/server/{{ inventory_hostname }}/"
+    path: "/tmp/{{ wg_server_wireguard_workspace_path | basename }}/server/{{ inventory_hostname }}/"
     state: directory
   register: wireguard_server_files_local_temp_dir
 
@@ -22,7 +22,7 @@
 - name: deploy wireguard server config
   copy:
     src: "{{ wireguard_server_files_local_temp_dir.path }}/{{ item | basename }}"
-    dest: "{{ wireguard_path }}"
+    dest: "{{ wg_server_wireguard_path }}"
     group: root
     mode: '0600'
   with_items: "{{ wireguard_server_files.stdout_lines }}"
@@ -41,7 +41,7 @@
   become: true
   vars:
       ansible_python_interpreter: /usr/bin/python3
-  when: has_systemctl == false
+  when: wg_server_has_systemctl == false
 
 - name: stop wireguard service, if systemctl is available
   service:
@@ -51,7 +51,7 @@
     enabled: yes
   become: yes
   ignore_errors: yes
-  when: has_systemctl == true
+  when: wg_server_has_systemctl == true
   vars:
       ansible_python_interpreter: /usr/bin/python3
 
@@ -60,7 +60,7 @@
   become: true
   vars:
       ansible_python_interpreter: /usr/bin/python3
-  when: has_systemctl == false
+  when: wg_server_has_systemctl == false
 
 - name: start wireguard service on server, if systemctl is available
   service:
@@ -70,7 +70,7 @@
     enabled: yes
   become: yes
   ignore_errors: yes
-  when: has_systemctl == true
+  when: wg_server_has_systemctl == true
   vars:
       ansible_python_interpreter: /usr/bin/python3
 

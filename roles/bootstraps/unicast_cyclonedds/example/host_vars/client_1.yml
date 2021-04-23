@@ -7,5 +7,5 @@
 unicast_cyclonedds_max_auto_participant_index: 50             
 unicast_cyclonedds_dds_network_interface: wg0             
 unicast_cyclonedds_dds_ip: 10.0.0.2
-unicast_cyclonedds_cycloneddsxml_path: "/root"
+unicast_cyclonedds_cycloneddsxml_path: "/etc"
 

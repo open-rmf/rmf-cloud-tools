@@ -7,7 +7,7 @@ We assume you already have ROS2 installed on your target machine.
 
 You should now be able to run the runfile:
 ```
-bash envs/roles/bootstraps/vcs/example/run
+bash roles/bootstraps/vcs/example/run
 ```
 
 ## Results ( Under default configurations )
