@@ -26,24 +26,6 @@
   become: yes
   ignore_errors: yes
 
-- name: disable networkmanager
-  service:
-    name: network-manager
-    masked: no
-    state: stopped 
-    enabled: false
-  become: yes
-  ignore_errors: yes
-
-- name: disable NetworkManager
-  service:
-    name: NetworkManager
-    masked: no
-    state: stopped 
-    enabled: false
-  become: yes
-  ignore_errors: yes
-
 - name: Enable DNS on resolved
   lineinfile:
     path: /etc/systemd/resolved.conf
@@ -55,7 +37,7 @@
   service:
     name: systemd-resolved
     masked: no 
-    state: restarted 
+    state: started
   become: yes
 
 - name: Add temporary nameserver if not existing
@@ -85,5 +67,6 @@
     - apt-utils
     - iproute2
     - iputils-ping
+    - network-manager
   become: yes
 

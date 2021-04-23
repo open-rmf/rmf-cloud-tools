@@ -14,6 +14,8 @@ You should now be able to run the runfile:
 bash roles/gadget/hotspot/example/run
 ```
 
+You will need to reboot the Pi after you are done.
+
 ## Results ( Under default configurations )
 Upon completion, With the default configurations, we should expect the RPi to broadcast a hotspot with SSID `hotspot_1` with password `password`. Assuming your `controller` link is sharing Internet, any device connecting to the hotspot will also have internet access.
 
