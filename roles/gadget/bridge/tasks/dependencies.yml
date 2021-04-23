@@ -34,13 +34,12 @@
     update_cache: yes
   vars:
     packages:
-    - dnsmasq
-    - hostapd
     - iptables
     - apt-utils
     - iproute2
     - iputils-ping
     - network-manager
+    - net-tools
     - avahi-daemon
   become: yes
 

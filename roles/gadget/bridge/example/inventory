@@ -1,6 +1,9 @@
+# You can add the variable 'ansible_sudo_pass=[your-sudo=password]' at the end of each entry of [hosts] if your ansible_user does not allow passwordless sudo:
+# Alternatively, you can use the -K flag and enter your sudo password on the command line
+# https://askubuntu.com/questions/147241/execute-sudo-without-password
+
 [hosts]
-bridge_0 ansible_user=ubuntu ansible_host=192.168.29.10  ansible_connection=ssh
+bridge_0 ansible_user=ubuntu ansible_host=192.168.50.18  ansible_connection=ssh ansible_sudo_pass=ubuntu
 
 [bridge]
 bridge_0
-
