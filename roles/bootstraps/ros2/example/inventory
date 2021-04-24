@@ -3,7 +3,7 @@
 # https://askubuntu.com/questions/147241/execute-sudo-without-password
 
 [hosts]
-localhost ansible_user=ubuntu ansible_host=127.0.0.1  ansible_connection=ssh
+localhost ansible_user=ubuntu ansible_host=52.74.96.225  ansible_connection=ssh
 
 [ros2]
 localhost
