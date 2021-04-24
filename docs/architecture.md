@@ -24,9 +24,7 @@ However, if your deployment scenario does not allow access to the Internet, it i
 ## Wireguard VPN
 We recommend setting up a VPN for deployment scenarios. There are a few benefits. First, this helps to reduce the complexity of coordinating IP addresses. Second, encryption helps with security. Third, this architecture is suitable for quick re-deployment onto cloud infrastructure, such as when you want to put RMF instance on AWS EC2. We use [Wireguard](https://www.wireguard.com/) for simplicity in our examples.
 
-## Gateway Pi
-We use a Gateway Pi to provide an "abstraction layer" regarding network infrastructure, from the point of view of a robot or infrastructure developer or vendor. The aim is to allow the necessary RMF communications to happen on the Wireguard / Gateway Pi layer. 
+## Gateway
+We use a Gateway device to provide an "abstraction layer" regarding network infrastructure, from the point of view of a robot or infrastructure developer or vendor. The aim is to allow the necessary RMF communications to happen on the Wireguard / Gateway layer, and thus minimize any changes required at the underlying systems. This makes setups more portable and reconfigurable.
 
-To the RMF instance, the Gateway Pi *is* the mobile robot / infrastructure, and communicates as so. To the mobile robot / infrastructure, the RMF instance *is* the Gateway Pi. This helps to simplify networking configuration and reduce the chances of mishaps.
-
-The Gateway Pi can be a separate device, or exist as a modification to the software of the connected system, depending on your constraints. 
+The Gateway Pi can be a separate device, or exist as a modification to the software of the connected system, depending on your needs. For example, the Gateway could exist directly on the controller of your mobile robot, or you could attach a separate device to it.
