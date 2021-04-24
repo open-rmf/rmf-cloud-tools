@@ -25,10 +25,7 @@ The repository revolves around useful infrastructure that are commonly found acr
 ### Automation
 Where we can, we try to automate the set up steps using [Red Hat Ansible](https://www.ansible.com/). We have tried to design it to be as flexible as possible, which hopefully facilitates easier deployment management through [infrastructure as code](https://en.wikipedia.org/wiki/Infrastructure_as_code). 
 
-However, it is not always possible to automate, and often automation becomes inflexible and limiting. 
-
-### Tutorials
-Due to limitations of automation and the need to customize infrastructure to your specific use case, tutorials and explainations accompany the automation scripts. This hopefully is illuminating and helps you to modify the infrastructure for your unique setup.
+However, it is not always possible to automate, so in such cases, tutorials and relevant links are provided instead.
 
 ## Feedback
 We are always looking for ways to improve. Do place an issue whenever you find a bug or think of better solutions, so we can improve this document together.
