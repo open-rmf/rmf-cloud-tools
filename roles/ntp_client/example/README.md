@@ -11,7 +11,6 @@ sudo vim /etc/ntp.conf        # Edit to configure the time servers to synchroniz
 sudo service ntp restart
 sudo service ntp status       # Check ntp is running
 sudo ufw allow from any to any port 123 proto udp   # Allow NTP clients to communicate on this port
-sudo ufw enable
 ```
 
 ## Setting up NTP clients
