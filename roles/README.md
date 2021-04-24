@@ -41,7 +41,7 @@ In the [architectural diagram](/docs/architecture.ong) we follow, the Wireguard 
 Complementary to the Wireguard Server is the client. In the [architecture diagram](/docs/architecture.png) we follow, the Wireguard clients exist on the bridge and hotspot modules, which your underlying systems connect to. In this way, we do not have to keep configuring the underlying systems themselves, but only the bridges + hotspot abstraction layer. This is especially useful when the underlying systems might be costly / time consuming to modify.
 
 ### Role: NTP Server
-Time synchronization is important since if your reported timestamps are wrong, your robots can behave strangely. Usually, synchronizing time over the Internet is sufficient. However, in scenarios where there might not be access to the Internet, it might be worth setting up a time server in order to synchronize time. [NTP](https://chrony.tuxfamily.org/) is suitable for this role. A time server is the reference which NTP clients synchronize time to.
+Time synchronization is important since if your reported timestamps are wrong, your robots can behave strangely. Usually, synchronizing time over the Internet is sufficient. However, in scenarios where there might not be access to the Internet, it might be worth setting up a time server in order to synchronize time. NTP is used for this role. A time server is the reference which NTP clients synchronize time to.
 
 ### Role: NTP Client
 Complementary to the NTP Server is the client, which obtains time from the server for use in timestamps in ROS2 messages.

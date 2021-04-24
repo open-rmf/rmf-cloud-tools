@@ -18,7 +18,7 @@ Once you are familiar, head over to have a look the various [ansible roles](./ro
 The repository revolves around useful infrastructure that are commonly found across RMF deployments. We aim to address common pain points when doing real deployments which are often multi-disciplinary in nature, such as:
 
 * How do we best manage possible [IP addresses](<docs/architecture.md#Wireguard-VPN>) when multiple systems, developed by different owners with different conventions, have to operate on the same network?
-* How do we best [synchronize time](<docs/architecture.md#Chrony-Time-Server>) so that RMF can coordinate systems accurately?
+* How do we best [synchronize time](<docs/architecture.md#Time-Server>) so that RMF can coordinate systems accurately?
 * Some systems can only be controlled by connecting to its access point, so it cannot connect to the main deployment network. How can I [integrate this robot](<docs/roles/README.md#Roles:-bridge>)?
 * How do we best test a system for scaling and inter-operability, without physically assembling the entire physical setup?
 
