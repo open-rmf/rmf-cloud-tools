@@ -12,14 +12,14 @@ The RMF Instance is a computer / [container](https://www.docker.com/resources/wh
 
 For example, we could change the structure such that certain adapters are run in a secondary computer, which is connected on the same network. 
 
-## Chrony Time Server
+## Time Server
 The time server is an optional component that could be helpful in your deployment. In general terms, if your devices have internet access, synchronizing time with the internet time servers should be sufficient to make sure your reported time stamps are valid. You can run:
 
 ```
 timedatectl set-ntp true
 ```
 
-However, if your deployment scenario does not allow access to the Internet, it is prudent to set up a time server(s) on the RMF instance, and synchronize time to them. Accurate timestamps are important, and chrony is designed to function well even in less than ideal network conditions.
+However, if your deployment scenario does not allow access to the Internet, it is prudent to set up a time server(s) on the RMF instance, and synchronize time to them. 
 
 ## Wireguard VPN
 We recommend setting up a VPN for deployment scenarios. There are a few benefits. First, this helps to reduce the complexity of coordinating IP addresses. Second, encryption helps with security. Third, this architecture is suitable for quick re-deployment onto cloud infrastructure, such as when you want to put RMF instance on AWS EC2. We use [Wireguard](https://www.wireguard.com/) for simplicity in our examples.
