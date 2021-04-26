@@ -13,7 +13,7 @@ ros2_dds_network_interface: wg0
 vcs_ros2_distribution: foxy
 vcs_ros2_setup_file: /opt/ros/foxy/setup.bash
 vcs_workspace_path: /home/ubuntu/ros2_ws
-vcs_file: https://raw.githubusercontent.com/open-rmf/rmf/main/rmf.repos
+vcs_file: https://raw.githubusercontent.com/open-rmf/rmf/temporary/demo/rmf.repos
 vcs_additional_apts:                         
   - python3-rosdep
   - python3-pip

@@ -7,13 +7,19 @@
   roles:
     - vcs
 
+- hosts: bridge
+  roles:
+    - bridge
+
 - hosts: wg_server
   roles:
     - wg_server
 
+- hosts: wg_client
+  roles:
+    - wg_client
+
 - hosts: unicast_cyclonedds_peers
   roles:
     - unicast_cyclonedds
-
-
 

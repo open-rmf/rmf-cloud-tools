@@ -3,14 +3,22 @@
 # https://askubuntu.com/questions/147241/execute-sudo-without-password
 
 [hosts]
-controller   ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  
-localhost    ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  
-server_0     ansible_user=ubuntu   ansible_host=192.168.29.10   ansible_connection=ssh  
+controller   ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh      ansible_sudo_pass=rmftest
+localhost    ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh      ansible_sudo_pass=rmftest
+server_0     ansible_user=ubuntu   ansible_host=192.168.0.183   ansible_connection=ssh      ansible_sudo_pass=rmftest
+bridge_0     ansible_user=ubuntu   ansible_host=gPiBridge1.local  ansible_connection=ssh    ansible_sudo_pass=ubuntu
+bridge_1     ansible_user=ubuntu   ansible_host=gPiBridge2.local  ansible_connection=ssh    ansible_sudo_pass=ubuntu
+magni        ansible_user=ubuntu   ansible_host=magniOsrc.local  ansible_connection=ssh    ansible_sudo_pass=ubuntu
 
 [ros2]
 localhost
+bridge_0
+bridge_1
 
 [rmf_demos_vcs]
+localhost  
+
+[free_fleet_vcs]
 localhost  
 
 [wg_server]
@@ -18,3 +26,15 @@ server_0
 
 [unicast_cyclonedds_peers]
 server_0
+bridge_0
+bridge_1
+magni
+
+[bridge]
+bridge_0
+bridge_1
+
+[wg_client]
+bridge_0
+bridge_1
+magni
