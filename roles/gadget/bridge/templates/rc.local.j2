@@ -22,6 +22,10 @@ fi
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
+iptables -A INPUT -s 224.0.0.0/4 -j ACCEPT
+iptables -A FORWARD -s 224.0.0.0/4 -d 224.0.0.0/4 -j ACCEPT
+iptables -A OUTPUT -s 224.0.0.0/4 -j ACCEPT
+
 iptables -t nat -A PREROUTING -i {{ bridge_device_network_interface }} -p tcp --dport 22 -j ACCEPT
 iptables -t nat -A PREROUTING -i {{ bridge_upstream_network_interface }} -p tcp --dport 22 -j ACCEPT
 iptables -t nat -A PREROUTING -i {{ bridge_device_network_interface }} -p tcp --dport 5353 -j ACCEPT
