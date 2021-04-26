@@ -1,0 +1,19 @@
+---
+#- hosts: ros2
+  #roles:
+    #- ros2
+
+#- hosts: rmf_demos_vcs
+  #roles:
+    #- vcs
+
+#- hosts: wg_server
+  #roles:
+    #- wg_server
+
+- hosts: unicast_cyclonedds_peers
+  roles:
+    - unicast_cyclonedds
+
+
+

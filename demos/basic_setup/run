@@ -1,0 +1,18 @@
+#!/bin/bash
+
+script_path=$(dirname $(realpath "$0"))
+roles_dir_path=$script_path/../../roles
+echo -e $roles_dir_path
+
+ln -sf $roles_dir_path/bootstraps/unicast_cyclonedds $script_path
+ln -sf $roles_dir_path/bootstraps/ros2 $script_path
+ln -sf $roles_dir_path/bootstraps/vcs $script_path
+ln -sf $roles_dir_path/gadget/hotspot $script_path
+ln -sf $roles_dir_path/gadget/bridge $script_path
+ln -sf $roles_dir_path/wireguard/wg_server $script_path
+ln -sf $roles_dir_path/wireguard/wg_client $script_path
+
+ANSIBLE_HOST_KEY_CHECKING=false ansible hosts -m ping -i $script_path/inventory 
+ansible-playbook $script_path/playbook.yml -i $script_path/inventory
+echo -e "Clearing symlinks."
+find $script_path -type l -delete

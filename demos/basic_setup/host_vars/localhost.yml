@@ -1,0 +1,51 @@
+
+# Role: ROS2
+---
+ros2_gpg_key_url: https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc            
+ros2_repository_url: http://packages.ros.org/ros2/ubuntu
+ros2_distribution: foxy
+ros2_rmw_implementation: rmw_cyclonedds_cpp          
+ros2_domain_id: 99
+ros2_installation_type: desktop
+ros2_cycloneddsxml_path: "/etc"
+ros2_dds_network_interface: wg0           
+
+# Role: VCS
+vcs_ros2_distribution: foxy
+vcs_ros2_setup_file: /opt/ros/foxy/setup.bash
+vcs_workspace_path: /home/ubuntu/ros2_ws
+vcs_file: https://raw.githubusercontent.com/open-rmf/rmf/main/rmf.repos
+vcs_additional_apts:                         
+  - python3-rosdep
+  - python3-pip
+  - git
+  - wget
+  - cmake
+  - python3-vcstool
+  - curl
+  - qt5-default
+  - python3-shapely
+  - python3-yaml
+  - python3-requests
+  - python3-flask-cors
+  - python3-colcon*
+vcs_additional_pips:
+  - flask-socketio
+vcs_ros2_build_command: colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+# unicast_cyclonedds
+unicast_cyclonedds_max_auto_participant_index: 50             
+unicast_cyclonedds_dds_network_interface: wg0             
+unicast_cyclonedds_dds_ip: 10.0.0.1
+unicast_cyclonedds_cycloneddsxml_path: "/etc"
+unicast_cyclonedds_group_name: "unicast_cyclonedds_peers"
+
+# wireguard_server
+wg_server_server_wireguard_ip: 10.0.0.1
+wg_server_external_network_interface: eth0
+wg_server_wireguard_network_interface: wg0
+wg_server_wireguard_workspace_path: "/home/ubuntu/wireguard_ws"            
+wg_server_wireguard_subnet: 24
+wg_server_wireguard_network_port: 51820
+wg_server_wireguard_path: "/etc/wireguard"                                
+wg_server_has_systemctl: true
