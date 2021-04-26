@@ -3,8 +3,9 @@
 # https://askubuntu.com/questions/147241/execute-sudo-without-password
 
 [hosts]
-controller   ansible_user=ubuntu   ansible_host=127.0.0.1   ansible_connection=ssh  
-localhost    ansible_user=ubuntu   ansible_host=127.0.0.1   ansible_connection=ssh  
+controller   ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  
+localhost    ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  
+server_0     ansible_user=ubuntu   ansible_host=192.168.29.10   ansible_connection=ssh  
 
 [ros2]
 localhost
@@ -13,8 +14,7 @@ localhost
 localhost  
 
 [wg_server]
-localhost
+server_0
 
 [unicast_cyclonedds_peers]
-localhost
-
+server_0
