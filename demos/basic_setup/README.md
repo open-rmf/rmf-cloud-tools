@@ -3,7 +3,18 @@
 This basic setup demonstrates a minimal setup of the proposed architecture. It consists of a single "main" computer ( localhost, also the same host running Ansible ), running RMF instance on ROS2 CycloneDDS, Wireguard, and an NTP server. You can modify configuration files to add Gateways, which we will describe in "further steps" in the rest of this README.
 
 ## Setup
-You will need a single computer running Unbuntu 20.04. From the directory root, run
+You will need a single computer running Unbuntu 20.04. 
+
+First, modify the inventory so that we have the server's external ip address ( the IP address that the wireguard clients will contact it ):
+```
+#inventory.yml
+[hosts]
+controller   ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  
+localhost    ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  
+server_0     ansible_user=ubuntu   ansible_host=[your-server-ip]   ansible_connection=ssh  
+```
+
+From the directory root, run
 ```
 bash demos/basic_setup/run
 ```
@@ -90,6 +101,13 @@ wg_client_server_name: localhost
 wg_client_server_wireguard_ip: 10.0.0.1                
 wg_client_wireguard_allowed_ips: 10.0.0.0/24           
 wg_client_has_systemctl: true
+
+# bridge
+bridge_device_network_interface: eth0              
+bridge_upstream_network_interface: wlan0          
+bridge_device_ip: 10.42.0.1                
+bridge_dns: 8.8.8.8   
+
 ```
 
 If necessary, modify the `playbook.yml` file ( if you added new roles ):
