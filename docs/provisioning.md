@@ -54,7 +54,7 @@ LAN_DHCP_LOW: The start ip of the DHCP pool
 LAN_DHCP_HIGH: The end ip of the DHCP pool
 
 # Examples
-LAN_IFACE=enp3s0 bash controller_lan_setup.bash 
+LAN_IFACE=enp3s0 sudo -E bash controller_lan_setup.bash 
 ```
 
 ### Set up your computer as a Router
@@ -72,7 +72,7 @@ LAN_DHCP_HIGH: The end ip of the DHCP pool
 
 # Examples
 LAN_IFACE=enp3s0 bash controller_hotspot_setup.bash
-LAN_IFACE=wlan0 LAN_SSID=hotspot LAN_PASSPHRASE=hunter2 bash controller_hotspot_setup.bash
+LAN_IFACE=wlan0 LAN_SSID=hotspot LAN_PASSPHRASE=hunter2 sudo -E bash controller_hotspot_setup.bash
 ```
 
 ### Use Static IP
