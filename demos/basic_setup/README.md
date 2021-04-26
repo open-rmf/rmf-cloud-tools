@@ -97,7 +97,7 @@ wg_client_wireguard_network_interface: wg0
 wg_client_external_dns: 8.8.8.8
 wg_client_wireguard_path: "/etc/wireguard"                               
 wg_client_client_wireguard_ip: 10.0.0.2
-wg_client_server_name: localhost
+wg_client_server_name: server_0
 wg_client_server_wireguard_ip: 10.0.0.1                
 wg_client_wireguard_allowed_ips: 10.0.0.0/24           
 wg_client_has_systemctl: true
