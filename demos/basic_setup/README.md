@@ -18,7 +18,9 @@ First, you can add a new host in the `inventory` file:
 [hosts]
 controller   ansible_user=ubuntu   ansible_host=127.0.0.1   ansible_connection=ssh  
 localhost    ansible_user=ubuntu   ansible_host=127.0.0.1   ansible_connection=ssh  
-bridge_0     ansible_user=ubuntu   ansible_host=gPiBridge1.local  ansible_connection=ssh
+server_0     ansible_user=ubuntu   ansible_host=192.168.29.10   ansible_connection=ssh  
+
+bridge_0     ansible_user=ubuntu   ansible_host=gPiBridge1.local  ansible_connection=ssh        # ADDED THIS
 ...
 
 ```
@@ -36,23 +38,23 @@ You can assign role(s) for this new device. In this case we will turn the device
 
 [ros2]
 localhost
-bridge_0
+bridge_0                                        # ADDED THIS
 
 [rmf_demos_vcs]
 localhost  
 
 [wg_server]
-localhost
+server_0
 
 [unicast_cyclonedds_peers]
-localhost
+server_0
+bridge_0                                        # ADDED THIS
+
+[bridge]                                        # ADDED THIS
 bridge_0
 
-[bridge]
-bridge_0
-
-[wg_client]
-bridge_0
+[wg_client]                                     # ADDED THIS
+bridge_0  
 ```
 
 Add a new `host_vars` for the `bridge_0` device called `bridge_0.yml`, with configurations copied and modified from the various role examples:
