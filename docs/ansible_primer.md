@@ -2,9 +2,9 @@
 
 Ansible is a useful automation tool for setting up infrastructure. We use it because it requires no setup on the target devices ( apart from SSH key access ) and is written in YAML, which helps readability. We use Ansible to automate the setting up of various Ansible Roles to accomplish infrastructure setup objectives. 
 
-You can think of Ansible Roles as certain capabilities of an infrastructure device, which can be layered over each other. For example, the Gateway Pi is a combination of a few ansible Roles:
+You can think of Ansible Roles as certain capabilities of an infrastructure device, which can be layered over each other. For example, the [Gateway](/docs/architecture.md#Gateway) a combination of a few ansible Roles:
 
-* hotspot
+* hotspot / bridge
 * wireguard client
 * ros2
 
