@@ -3,5 +3,6 @@
   template:
     src: "cyclonedds.xml.j2"
     dest: "{{ unicast_cyclonedds_cycloneddsxml_path }}/cyclonedds.xml"
+  become: true 
 
 

@@ -9,7 +9,7 @@ client_3    ansible_user=root     ansible_host=192.168.29.13    ansible_connecti
 client_4    ansible_user=root     ansible_host=192.168.29.14    ansible_connection=ssh
 server_0    ansible_user=root     ansible_host=192.168.29.10    ansible_connection=ssh
 
-[peers]
+[unicast_cyclonedds_peers]
 client_1
 client_2
 client_3

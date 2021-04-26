@@ -10,7 +10,7 @@
                 </General>
                 <Discovery>
                         <Peers>
-                {% for item in groups['peers'] %}
+                {% for item in groups[unicast_cyclonedds_group_name] %}
                 <Peer address="{{ hostvars[item]['unicast_cyclonedds_dds_ip'] }}"/>
                 {% endfor %}
         </Peers>
