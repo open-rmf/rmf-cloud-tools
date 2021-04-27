@@ -14,10 +14,31 @@ localhost    ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connecti
 server_0     ansible_user=ubuntu   ansible_host=[your-server-ip]   ansible_connection=ssh  
 ```
 
-From the directory root, run
+Make sure you have passwordless access to all devices from your Ansible controller ( the device you will provision on ):
+```
+ssh-copy-id [all your device ips]
+```
+
+And add all necessary private keys to your toolchain, if necessary:
+```
+ssh-agent bash
+ssh-add [all your private keys]
+```
+
+If your `ansible_user` does not have passwordless sudo ( meaning you cannot [run sudo without typing your password](https://askubuntu.com/questions/147241/execute-sudo-without-password) ) then you might want to add a new variable at the end of each host entry so that `sudo` commands can be automated:
+```
+controller   ansible_user=ubuntu   ansible_host=127.0.0.1       ansible_connection=ssh  ansible_sudo_pass=[your-sudo-pass-for-host-'controller']
+```
+Of course, you should keep this config file secret. You can also think of more complex mechanisms to keep the password from being stored in plain text.
+
+
+Finally, from the directory root, run 
 ```
 bash demos/basic_setup/run
 ```
+
+## Cloud Setup
+You might want to provision a cloud instance, instead of using a local computer. We should then first create a cloud instance: You can refer [here](/docs/provisioning.md#Cloud-Devices) for instructions to do this. Then, use your cloud server ip in place of `your-server-ip`.
 
 ## Adding a Gateway
 You can do the following steps to add a new device to your setup. Assuming you have a new device `gPiBridge1.local` that you would like to add:

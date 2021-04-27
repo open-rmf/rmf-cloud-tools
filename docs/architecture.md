@@ -4,7 +4,7 @@ The following is an architecture diagram with the important components we will u
 
 ![architecture](./architecture.png)
 
-The following describes the architecture, and explains the design choices made. 
+The following describes the architecture, and explains the design choices made. Tutorials on how to set up the whole RMF deployment (both cloud and local) can be found in the [basic_setup](/demos/basic_setup/README.md) example.
 
 
 ## RMF Instance
