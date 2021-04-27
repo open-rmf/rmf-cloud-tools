@@ -19,7 +19,7 @@ bash roles/gadget/bridge/example/run
 
 
 ## Results ( Under default configurations )
-You should be able to access the target device from the RMF network by interacting directly with the pi. For example, if your target has a SimpleHttpServer running on port 8000:
+You should be able to access the target device from the RMF network by interacting directly with the pi. For example, if your target has an ip address of `10.42.0.1` with respect to the bridge, and has a SimpleHttpServer running on port 8000:
 ```
 python3 -m http.server
 ```
