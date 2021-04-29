@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import sys
+import subprocess
 import uuid
 import time
 import argparse
@@ -34,7 +35,8 @@ class TaskGeneratorConfig:
           self, task_type, robot_type, task_config_file,
           task_priority, task_count, use_sim_time,
           submit_task_topic, get_task_topic,
-          task_check_period, task_check_timeout):
+          task_check_period, task_check_timeout,
+          log_label):
     self.task_type = task_type
     self.robot_type = robot_type
     self.task_config_file = task_config_file
@@ -45,6 +47,7 @@ class TaskGeneratorConfig:
     self.get_task_topic = get_task_topic
     self.task_check_period = task_check_period
     self.task_check_timeout = task_check_timeout
+    self.log_label = log_label
 
 
 class TaskGenerator:
@@ -72,6 +75,8 @@ class TaskGenerator:
                         help='Seconds between checks for task completion. default: 5.0')
     parser.add_argument("--task_check_timeout", type=float, default=300.0,
                         help='Seconds before deciding task is failed. default: 300.0')
+    parser.add_argument("--log_label", type=str, default="log",
+                        help='Label to identify logs from this instance. default: "log"')
 
     # initialization with given parameters
     self.args = parser.parse_args(argv[1:])
@@ -89,7 +94,8 @@ class TaskGenerator:
         self.args.submit_task_topic,
         self.args.get_task_topic,
         self.args.task_check_period,
-        self.args.task_check_timeout
+        self.args.task_check_timeout,
+        self.args.log_label
     )
 
     # ROS2 Plumbing
@@ -187,14 +193,23 @@ class TaskGenerator:
       time.sleep(self.config.task_check_period)
       time_elapsed += self.config.task_check_period
 
-  def _handle_task_start(self):
-    pass
+  def _handle_task_start(self, task_to_track):
+    subprocess.Popen(['mkdir', '-p',  f'{self.config.log_label}'])
+    log_process = subprocess.Popen(['ros2', 'bag', 'record', '-a', '-o', f'{self.config.log_label}/{task_to_track}.bag'], 
+        shell=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-  def _handle_task_failure(self):
-    pass
+    return log_process
 
-  def _handle_task_success(self):
-    pass
+  def _handle_task_failure(self, task_to_track, log_process):
+    log_process.kill()
+    # Implement your own alert methods here 
+    subprocess.Popen(['mv', f'{self.config.log_label}/{task_to_track}.bag', f'{self.config.log_label}/{task_to_track}-failed.bag'])
+    shutdown(1)
+
+  def _handle_task_success(self, task_to_track, log_process):
+    log_process.kill()
+    # Remove bags to save space
+    subprocess.Popen(['rm', '-r', f'{self.config.log_label}/{task_to_track}.bag'])
 
   def main(self):
     while self.task_count_left > 0:
@@ -213,16 +228,17 @@ class TaskGenerator:
         continue
 
       try:
-        self._handle_task_start()
+        log_process = self._handle_task_start(task_to_track)
         self._await_task_completion(task_to_track)
 
       except Exception as e:
         # Task Failure, collect data!
         self.node.get_logger().error(e.__str__())
-        self._handle_task_failure()
+        self._handle_task_failure(task_to_track, log_process)
 
       self.task_count_left -= 1
-      self._handle_task_success()
+      self._handle_task_success(task_to_track, log_process)
+      time.sleep(0.5)
 
     self.node.get_logger().info(f"Finished {iterations} requests")
 
@@ -233,8 +249,11 @@ def main(argv=sys.argv):
   rclpy.init(args=sys.argv)
   task_generator = TaskGenerator(sys.argv)
   task_generator.main()
-  rclpy.shutdown()
+  shutdown(0)
 
+def shutdown(return_code):
+  rclpy.shutdown()
+  sys.exit(return_code)
 
 if __name__ == '__main__':
   main(sys.argv)
