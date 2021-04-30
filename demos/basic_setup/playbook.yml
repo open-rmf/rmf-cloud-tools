@@ -1,19 +1,19 @@
----
-- hosts: ros2
-  roles:
-    - ros2
+#---
+#- hosts: ros2
+  #roles:
+    #- ros2
 
-- hosts: rmf_demos_vcs
-  roles:
-    - vcs
+#- hosts: rmf_demos_vcs
+  #roles:
+    #- vcs
 
-- hosts: bridge
-  roles:
-    - bridge
+#- hosts: bridge
+  #roles:
+    #- bridge
 
-- hosts: wg_server
-  roles:
-    - wg_server
+#- hosts: wg_server
+  #roles:
+    #- wg_server
 
 - hosts: wg_client
   roles:
