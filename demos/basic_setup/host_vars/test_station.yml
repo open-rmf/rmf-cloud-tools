@@ -30,4 +30,26 @@ wg_client_wireguard_allowed_ips: 10.0.0.0/24
 wg_client_has_systemctl: true
 
 
+# Role: VCS
+vcs_ros2_distribution: foxy
+vcs_ros2_setup_file: /opt/ros/foxy/setup.bash
+vcs_workspace_path: /home/ubuntu/ros2_ws
+vcs_file: https://raw.githubusercontent.com/open-rmf/rmf/temporary/demo/rmf.repos
+vcs_additional_apts:                         
+  - python3-rosdep
+  - python3-pip
+  - git
+  - wget
+  - cmake
+  - python3-vcstool
+  - curl
+  - qt5-default
+  - python3-shapely
+  - python3-yaml
+  - python3-requests
+  - python3-flask-cors
+  - python3-colcon*
+vcs_additional_pips:
+  - flask-socketio
+vcs_ros2_build_command: colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-up-to rmf_visualization
 
