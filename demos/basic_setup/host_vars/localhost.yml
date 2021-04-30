@@ -4,7 +4,7 @@ ros2_gpg_key_url: https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc
 ros2_repository_url: http://packages.ros.org/ros2/ubuntu
 ros2_distribution: foxy
 ros2_rmw_implementation: rmw_cyclonedds_cpp          
-ros2_domain_id: 99
+ros2_domain_id: 0
 ros2_installation_type: desktop
 ros2_cycloneddsxml_path: "/etc"
 ros2_dds_network_interface: wg0           
