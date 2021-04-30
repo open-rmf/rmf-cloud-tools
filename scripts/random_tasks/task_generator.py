@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import sys
+import os
 import subprocess
 import uuid
 import time
@@ -120,10 +121,10 @@ class TaskGenerator:
       return True
 
   def _generate_loop_task(self):
-    self.node.get_logger().info("Generating Random Loop Task")
     random_points = random.sample(self.config.task_config_file, 1)
     start_wp = random_points[0]
     finish_wp = random_points[0]
+    self.node.get_logger().info(f"Generated Random Loop Task to {finish_wp}")
 
     req_msg = SubmitTask.Request()
     req_msg.description.task_type.type = TaskType.TYPE_LOOP
@@ -205,23 +206,27 @@ class TaskGenerator:
     # Implement your own alert methods here 
     subprocess.Popen(['mv', f'{self.config.log_label}/{task_to_track}.bag', f'{self.config.log_label}/{task_to_track}-failed.bag'])
 
-    # Example slack integration
-    # import os
-    # from slack_sdk import WebClient
-    # from slack_sdk.errors import SlackApiError
+    try: 
+      # Example slack integration
+      os.environ['SLACK_BOT_TOKEN']
+      from slack_sdk import WebClient
+      from slack_sdk.errors import SlackApiError
 
-    # client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
+      client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 
-    # try:
-        # subprocess.Popen(['zip', '-r', f'{self.config.log_label}/{task_to_track}-failed.zip', f'{self.config.log_label}/{task_to_track}-failed.bag']).communicate()
-        # filepath=f'{self.config.log_label}/{task_to_track}-failed.zip'
-        # response = client.files_upload(channels=os.environ['SLACK_BOT_CHANNEL'], file=filepath)
-        # assert response["file"]  # the uploaded file
-    # except SlackApiError as e:
-        # # You will get a SlackApiError if "ok" is False
-        # assert e.response["ok"] is False
-        # assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
-        # print(f"Got an error: {e.response['error']}")
+      try:
+          subprocess.Popen(['zip', '-r', f'{self.config.log_label}/{task_to_track}-failed.zip', f'{self.config.log_label}/{task_to_track}-failed.bag']).communicate()
+          filepath=f'{self.config.log_label}/{task_to_track}-failed.zip'
+          response = client.files_upload(channels=os.environ['SLACK_BOT_CHANNEL'], file=filepath)
+          assert response["file"]  # the uploaded file
+      except SlackApiError as e:
+          # You will get a SlackApiError if "ok" is False
+          assert e.response["ok"] is False
+          assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
+          print(f"Got an error: {e.response['error']}")
+
+    except KeyError:
+      pass
 
     shutdown(1)
 
