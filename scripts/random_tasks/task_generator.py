@@ -217,6 +217,7 @@ class TaskGenerator:
 
       screencap_process = subprocess.Popen([
           'ffmpeg', 
+          '-y',
           '-hide_banner',
           '-loglevel',
           'error',
