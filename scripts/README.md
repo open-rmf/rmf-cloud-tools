@@ -38,3 +38,9 @@ If your device has a X server running ( A monitor display, or VNC server ), the 
 SLACK_BOT_TOKEN=]your-token] SLACK_BOT_CHANNEL=[your-channel] python3 task_generator.py --robot_type tinyRobot --task_config_path office_waypoints.yml --task_type loop --use_sim_time --task_check_timeout 10.0 --display :1
 ```
 
+## extract_waypoints
+Given a path to a `building.yaml` file, generate a list of waypoint names for each graph that was annotated. Useful for generating waypoints to test using `random_tasks`.
+
+```
+python3 extract_waypoints.py --building_path clinic.building.yaml 
+```
