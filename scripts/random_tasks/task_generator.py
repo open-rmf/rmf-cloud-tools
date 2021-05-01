@@ -225,7 +225,7 @@ class TaskGenerator:
           '-framerate', '25',
           '-video_size', video_resolution,
           '-t',
-          str(int(self.config.task_check_period)),
+          str(int(self.config.task_check_timeout)),
           '-i',
           f"{ self.config.display }.0",
           f'{self.config.log_label}/{task_to_track}.mp4'])
@@ -236,6 +236,8 @@ class TaskGenerator:
 
   def _handle_task_failure(self, task_to_track, log_process):
     [process.kill() for process in log_process]
+    [process.wait() for process in log_process]
+    subprocess.call(["stty", "echo"])
     # Implement your own alert methods here
     subprocess.Popen(['mv', f'{self.config.log_label}/{task_to_track}.bag',
                      f'{self.config.log_label}/{task_to_track}-failed.bag']).communicate()
@@ -279,9 +281,14 @@ class TaskGenerator:
 
   def _handle_task_success(self, task_to_track, log_process):
     [process.kill() for process in log_process]
+    [process.wait() for process in log_process]
+    subprocess.call(["stty", "echo"])
+
     # Remove bags to save space
     subprocess.Popen(
         ['rm', '-r', f'{self.config.log_label}/{task_to_track}.bag'])
+    subprocess.Popen(
+        ['rm', '-r', f'{self.config.log_label}/{task_to_track}.mp4'])
 
   def main(self):
     while self.task_count_left > 0:
