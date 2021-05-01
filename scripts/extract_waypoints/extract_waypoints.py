@@ -47,7 +47,11 @@ def main(argv=sys.argv):
       waypoints[f'{graph_idx}_{level}'].add(dest_vertex)
 
   for graph_index, waypoint_set in waypoints.items():
-    waypoint_set.remove("")
+    try:
+      waypoint_set.remove("")
+    except KeyError:
+      pass
+
     with open(f'{graph_index}.yml', 'w') as output_file:
       yaml.dump(list(waypoint_set), output_file)
 
