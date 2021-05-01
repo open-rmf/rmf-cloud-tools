@@ -27,6 +27,16 @@ On your viewing hosts, you might have to do some setup. The most straightfoward 
 ssh -L 5901:localhost:5901 [your-host]
 ```
 
+You can also set up forwarding in the `~/.ssh/config` file:
+```
+Host [your-host]
+  User ubuntu
+  HostName [your-host-ip]
+  Port 22
+  IdentityFile ~/.ssh/[your-id-rsa]
+  LocalForward 5901 localhost:5901
+```
+
 Then install tiger VNC viewer and login with the credentials you supplied.
 ```
 sudo apt install tigervnc-viewer
