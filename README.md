@@ -13,6 +13,8 @@ To start the walk through, we can look at:
 
 Once you are familiar, head over to have a look the various [ansible roles](./roles) and have a look at how they are used to set up the proposed [architecture](docs/architecture.md).
 
+There are also [scripts](/scripts) that could be helpful to automate the testing experience.
+
 ## General Structure
 
 The repository revolves around useful infrastructure that are commonly found across RMF deployments. We aim to address common pain points when doing real deployments which are often multi-disciplinary in nature, such as:
