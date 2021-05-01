@@ -37,7 +37,7 @@ class TaskGeneratorConfig:
           task_priority, task_count, use_sim_time,
           submit_task_topic, get_task_topic,
           task_check_period, task_check_timeout,
-          log_label):
+          log_label, display):
     self.task_type = task_type
     self.robot_type = robot_type
     self.task_config_file = task_config_file
@@ -49,6 +49,7 @@ class TaskGeneratorConfig:
     self.task_check_period = task_check_period
     self.task_check_timeout = task_check_timeout
     self.log_label = log_label
+    self.display = display
 
 
 class TaskGenerator:
@@ -78,6 +79,8 @@ class TaskGenerator:
                         help='Seconds before deciding task is failed. default: 300.0')
     parser.add_argument("--log_label", type=str, default="log",
                         help='Label to identify logs from this instance. default: "log"')
+    parser.add_argument("--display", type=str, default=None,
+                        help='The X display used for visualization. Used for recording playbacks. default: ":0"')
 
     # initialization with given parameters
     self.args = parser.parse_args(argv[1:])
@@ -96,7 +99,8 @@ class TaskGenerator:
         self.args.get_task_topic,
         self.args.task_check_period,
         self.args.task_check_timeout,
-        self.args.log_label
+        self.args.log_label,
+        self.args.display
     )
 
     # ROS2 Plumbing
@@ -168,7 +172,8 @@ class TaskGenerator:
 
     while True:
       if time_elapsed > self.config.task_check_timeout:
-        raise Exception(f"Task failed to complete within timeout duration of {self.config.task_check_timeout}")
+        raise Exception(
+            f"Task failed to complete within timeout duration of {self.config.task_check_timeout}")
 
       # Get current task list
       req_msg = GetTaskList.Request()
@@ -195,18 +200,48 @@ class TaskGenerator:
       time_elapsed += self.config.task_check_period
 
   def _handle_task_start(self, task_to_track):
+    log_process = []
+
     subprocess.Popen(['mkdir', '-p',  f'{self.config.log_label}'])
-    log_process = subprocess.Popen(['ros2', 'bag', 'record', '-a', '-o', f'{self.config.log_label}/{task_to_track}.bag'], 
+    bag_process = subprocess.Popen(
+        ['ros2', 'bag', 'record', '-a', '-o',
+            f'{self.config.log_label}/{task_to_track}.bag'],
         shell=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    log_process.append(bag_process)
+
+    if self.args.display is not None:
+      video_resolution = subprocess.getoutput(
+          'xrandr --display :1 | awk \'$0 ~ "*" {print $1}\''
+      )
+
+      screencap_process = subprocess.Popen([
+          'ffmpeg', 
+          '-hide_banner',
+          '-loglevel',
+          'error',
+          '-f', 'x11grab',
+          '-framerate', '25',
+          '-video_size', video_resolution,
+          '-t',
+          str(int(self.config.task_check_period)),
+          '-i',
+          f"{ self.config.display }.0",
+          f'{self.config.log_label}/{task_to_track}.mp4'])
+          # shell=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+      log_process.append(screencap_process)
 
     return log_process
 
   def _handle_task_failure(self, task_to_track, log_process):
-    log_process.kill()
-    # Implement your own alert methods here 
-    subprocess.Popen(['mv', f'{self.config.log_label}/{task_to_track}.bag', f'{self.config.log_label}/{task_to_track}-failed.bag'])
+    [process.kill() for process in log_process]
+    # Implement your own alert methods here
+    subprocess.Popen(['mv', f'{self.config.log_label}/{task_to_track}.bag',
+                     f'{self.config.log_label}/{task_to_track}-failed.bag']).communicate()
+    subprocess.Popen(['mv', f'{self.config.log_label}/{task_to_track}.mp4',
+                     f'{self.config.log_label}/{task_to_track}-failed.mp4']).communicate()
 
-    try: 
+    try:
       # Example slack integration
       os.environ['SLACK_BOT_TOKEN']
       from slack_sdk import WebClient
@@ -215,15 +250,26 @@ class TaskGenerator:
       client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 
       try:
-          subprocess.Popen(['zip', '-r', f'{self.config.log_label}/{task_to_track}-failed.zip', f'{self.config.log_label}/{task_to_track}-failed.bag']).communicate()
-          filepath=f'{self.config.log_label}/{task_to_track}-failed.zip'
-          response = client.files_upload(channels=os.environ['SLACK_BOT_CHANNEL'], file=filepath)
-          assert response["file"]  # the uploaded file
+        # Zip bag up
+        subprocess.Popen(['zip', '-r', f'{self.config.log_label}/{task_to_track}-failed.zip',
+                         f'{self.config.log_label}/{task_to_track}-failed.bag']).communicate()
+
+        filepath = f'{self.config.log_label}/{task_to_track}-failed.zip'
+        response = client.files_upload(
+            channels=os.environ['SLACK_BOT_CHANNEL'], file=filepath)
+        assert response["file"]  # the uploaded file
+
+        filepath = f'{self.config.log_label}/{task_to_track}-failed.mp4'
+        response = client.files_upload(
+            channels=os.environ['SLACK_BOT_CHANNEL'], file=filepath)
+        assert response["file"]  # the uploaded file
+
       except SlackApiError as e:
-          # You will get a SlackApiError if "ok" is False
-          assert e.response["ok"] is False
-          assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
-          print(f"Got an error: {e.response['error']}")
+        # You will get a SlackApiError if "ok" is False
+        assert e.response["ok"] is False
+        # str like 'invalid_auth', 'channel_not_found'
+        assert e.response["error"]
+        print(f"Got an error: {e.response['error']}")
 
     except KeyError:
       pass
@@ -231,9 +277,10 @@ class TaskGenerator:
     shutdown(1)
 
   def _handle_task_success(self, task_to_track, log_process):
-    log_process.kill()
+    [process.kill() for process in log_process]
     # Remove bags to save space
-    subprocess.Popen(['rm', '-r', f'{self.config.log_label}/{task_to_track}.bag'])
+    subprocess.Popen(
+        ['rm', '-r', f'{self.config.log_label}/{task_to_track}.bag'])
 
   def main(self):
     while self.task_count_left > 0:
@@ -275,9 +322,11 @@ def main(argv=sys.argv):
   task_generator.main()
   shutdown(0)
 
+
 def shutdown(return_code):
   rclpy.shutdown()
   sys.exit(return_code)
+
 
 if __name__ == '__main__':
   main(sys.argv)
