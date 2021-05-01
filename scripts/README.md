@@ -43,4 +43,7 @@ Given a path to a `building.yaml` file, generate a list of waypoint names for ea
 
 ```
 python3 extract_waypoints.py --building_path clinic.building.yaml 
+
+# Generates n files 0.yml, ... n.yml based on number of graphs 
+# As well as 0_L1.yml, 0_L2.yml for vertices that are only found in the specific level.
 ```

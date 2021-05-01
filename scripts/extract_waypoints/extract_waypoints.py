@@ -43,6 +43,9 @@ def main(argv=sys.argv):
       waypoints[graph_idx].add(source_vertex)
       waypoints[graph_idx].add(dest_vertex)
 
+      waypoints[f'{graph_idx}_{level}'].add(source_vertex)
+      waypoints[f'{graph_idx}_{level}'].add(dest_vertex)
+
   for graph_index, waypoint_set in waypoints.items():
     waypoint_set.remove("")
     with open(f'{graph_index}.yml', 'w') as output_file:
