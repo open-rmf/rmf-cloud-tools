@@ -30,17 +30,11 @@
   become: true
 
 - name: Setup ROS2 keys
-  apt_key:
-    url: "{{ ros2_gpg_key_url }}"
-    state: present
+  shell: "curl -sSL {{ ros2_gpg_key_url }}  -o /usr/share/keyrings/ros-archive-keyring.gpg"
   become: true
 
-- name: Setup ROS2 sources
-  apt_repository:
-    repo: "deb {{ ros2_repository_url }} {{ ansible_distribution_release }} main"
-    state: present
-    filename: ros2-latest
-  become: true
+- name: Setup ROS@ sources
+  shell: "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] {{ ros2_repository_url }} $(lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null"
 
 - name: add gazebo packages
   shell: "echo \"deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main\" > /etc/apt/sources.list.d/gazebo-stable.list"
@@ -49,8 +43,6 @@
 - name: add gpg keys for gazebo
   shell: 'wget https://packages.osrfoundation.org/gazebo.key -O - | apt-key add -'
   become: true
-
-
 
 - name: Install ROS2
   apt:
