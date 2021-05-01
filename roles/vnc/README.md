@@ -17,7 +17,7 @@ sudo apt install ubuntu-desktop gnome-panel gnome-settings-daemon metacity nauti
 sudo apt install tigervnc-standalone-server
 
 # Next, run the following command and set up your credentials for the server
-tigervncserver
+vncserver --geometry 1920x1080
 
 # If you have firewalls, you might need to open up a port. The default ports are 5900+N, where N is the Nth VNC display. With a single call of tigervncserver, the default is a display of :1, meaning port 5901 is used.
 ```
