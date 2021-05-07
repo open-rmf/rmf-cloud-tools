@@ -1,0 +1,22 @@
+# hotspot_ssid: The ssid of the hotspot
+# hotspot_psk: The hotspot password
+# hotspot_external_network_interface: The network interface which connects to the rest of your network
+# hotspot_network_interface: The network interface which your hotspot broadcasts on
+# hotspot_ip: The ip address of your hotspot device 
+# hotspot_dhcp_start: The starting ip of the hotspot dhcp pool
+# hotspot_dhcp_end: The last address of the hotspot dhcp pool
+# hotspot_netmask: The netmask of this hotspot
+# hotspot_subnet: The numerical representation of hotspot_netmask
+# hotspot_dns: The dns server that the device will contact for DNS resolution
+---
+hotspot_ssid: hotspot_0
+hotspot_psk: password
+hotspot_external_network_interface: eth0
+hotspot_network_interface: wlan0
+hotspot_ip: 10.42.29.1
+hotspot_ip_dhcp_start: 10.42.29.2
+hotspot_ip_dhcp_end: 10.42.29.20
+hotspot_netmask: 255.255.255.0
+hotspot_subnet: 24
+hotspot_dns: 8.8.8.8
+

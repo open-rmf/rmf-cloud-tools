@@ -1,0 +1,4 @@
+---
+- hosts: wg_client 
+  roles:
+    - wg_client

@@ -1,0 +1,29 @@
+#- name: Update aptitude
+  #apt:
+    #upgrade: full
+  #become: true
+
+#- name: Install dependencies
+  #apt:
+    #name: "{{ packages }}"
+    #update_cache: true
+  #vars:
+    #packages:
+      #- systemd-timesyncd
+  #become: true
+
+- name: stop ntp
+  shell: timedatectl set-ntp false
+  become: true
+
+- name: Add time server
+  lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^#?NTP='
+    line: 'NTP={{ ntp_client_ntp_server_ip }}'
+  become: yes
+
+- name: stop ntp
+  shell: timedatectl set-ntp true
+  become: true
+

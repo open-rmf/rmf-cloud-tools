@@ -1,0 +1,3 @@
+# ntp_client_ntp_server_ip: The IP address that this server is serving NTP time on
+
+ntp_client_ntp_server_ip: 192.168.29.10

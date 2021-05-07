@@ -1,0 +1,121 @@
+---
+- name: Update aptitude
+  apt:
+    upgrade: full
+    update_cache: true
+  become: true
+
+- name: Install iproute2
+  apt:
+    name: "iproute2"
+    state: present
+  become: true
+
+- name: Install iputils-ping
+  apt:
+    name: "iputils-ping"
+    state: present
+  become: true
+
+- name: Install dependencies for setting up sources
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+  vars:
+    packages:
+    - curl
+    - gnupg2
+    - lsb-release
+    - apt-utils
+  become: true
+
+- name: Setup ROS2 keys
+  shell: "curl -sSL {{ ros2_gpg_key_url }}  -o /usr/share/keyrings/ros-archive-keyring.gpg"
+  become: true
+
+- name: Setup ROS@ sources
+  shell: "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] {{ ros2_repository_url }} $(lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null"
+
+- name: add gazebo packages
+  shell: "echo \"deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main\" > /etc/apt/sources.list.d/gazebo-stable.list"
+  become: true
+
+- name: add gpg keys for gazebo
+  shell: 'wget https://packages.osrfoundation.org/gazebo.key -O - | apt-key add -'
+  become: true
+
+- name: Install ROS2
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+  vars:
+    packages:
+      - "{{ 'ros-' + ros2_distribution + '-' + ros2_installation_type }}"
+  become: true
+
+- name: Install CycloneDDS
+  apt:
+    name: "ros-{{ ros2_distribution }}-rmw-cyclonedds-cpp"
+    update_cache: true
+  become: true
+
+- name: Install argcomplete
+  apt:
+    name: python3-argcomplete
+  become: true
+
+- name: Install colcon to build packages
+  apt:
+    name: python3-colcon-common-extensions
+  become: true
+
+- name: Generate CycloneDDS config
+  template:
+    src: "cyclonedds.xml.j2"
+    dest: "{{ ros2_cycloneddsxml_path }}/cyclonedds.xml"
+  become: true
+
+- name: Update source environment
+  lineinfile:
+    path: ~/.bashrc
+    regexp: source /opt/ros/*/setup.bash
+    line: source /opt/ros/{{ ros2_distribution }}/setup.bash
+
+- name: Update ROS2 domain id
+  lineinfile:
+    path: ~/.bashrc
+    regexp: export ROS_DOMAIN_ID=*
+    line: export ROS_DOMAIN_ID={{ ros2_domain_id }}
+
+- name: Update RMW implementation
+  lineinfile:
+    path: ~/.bashrc
+    line: export RMW_IMPLEMENTATION={{ ros2_rmw_implementation }}
+
+- name: Update to use CycloneDDS config
+  lineinfile:
+    path: ~/.bashrc
+    line: "export CYCLONEDDS_URI=file://{{ ros2_cycloneddsxml_path }}/cyclonedds.xml"
+  when: (ros2_rmw_implementation == "rmw_cyclonedds_cpp")
+
+- name: Set up rosdep
+  apt:
+    name: "{{ packages }}"
+    update_cache: true
+  vars:
+    packages:
+    - python3-rosdep
+  become: true
+
+- name: Initialize rosdep if not done yet
+  shell: 'rosdep init'
+  become: true 
+  ignore_errors: true
+
+- name: Update rosdep
+  shell: 'rosdep update'
+
+- name: Add line in bashrc for rosdep incantation
+  lineinfile:
+    path: ~/.bashrc
+    line: "alias rdpinstall='rosdep install --from-paths src --ignore-src --rosdistro {{ ros2_distribution }} -y'"

@@ -1,0 +1,20 @@
+---
+- name: rc.local
+  template:
+    src: rc.local.j2
+    dest: /etc/rc.local
+    backup: true
+  become: yes
+
+- name: restart rclocal
+  shell: "sh /etc/rc.local"
+  become: yes
+
+- name: disable wait online service
+  service:
+    name: systemd-networkd-wait-online 
+    masked: yes
+    state: stopped 
+  become: yes
+
+

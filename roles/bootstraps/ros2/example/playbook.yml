@@ -1,0 +1,7 @@
+---
+- hosts: ros2
+  roles:
+    - ros2
+
+
+

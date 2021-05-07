@@ -1,0 +1,11 @@
+#!/bin/bash
+
+script_path=$(dirname $(realpath "$0"))
+dir_path=$(dirname $script_path)
+dir_name=${dir_path##*/}
+
+for file_path in $script_path/*.docker; do
+  file_name=${file_path##*/}
+  docker build -t $dir_name/$file_name -f $file_path $script_path
+done
+

@@ -1,0 +1,6 @@
+---
+- hosts: bridge
+  roles:
+    - bridge
+
+

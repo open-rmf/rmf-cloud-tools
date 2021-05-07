@@ -1,8 +1,5 @@
-scripts/
-clients/
-*.pem
-*.pub
-*.terraform*
-*.tfstate*
+tags
+*.swp
+*.swo
+.logs*
 .vscode
-*.key

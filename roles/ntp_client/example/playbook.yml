@@ -1,0 +1,8 @@
+---
+- hosts: ntp_client
+  roles:
+    - ntp_client
+
+
+
+

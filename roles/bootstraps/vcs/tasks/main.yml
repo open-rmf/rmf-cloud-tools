@@ -1,0 +1,54 @@
+#---
+- name: Update aptitude
+  apt:
+    upgrade: full
+  become: true
+
+- name: Install additonal apt dependencies
+  apt:
+    name: "{{ vcs_additional_apts }}"
+    update_cache: true
+  become: true
+
+- name: Intall additional pip dependencies
+  pip:
+    name: "{{ vcs_additional_pips }}"
+    executable: "/usr/bin/pip3"
+
+- name: create vcs workspace
+  file:
+    path: "{{ vcs_workspace_path }}/src"
+    state: directory
+    recurse: true
+  register: vcs_workspace_dir
+
+- name: Initialize rosdep if not done yet
+  shell: 'rosdep init'
+  become: true 
+  ignore_errors: true
+
+- name: Update rosdep
+  shell: 'rosdep update'
+
+- name: Download vcs file
+  shell: "wget {{ vcs_file }} -O {{ vcs_file | basename }}"
+  args:
+    chdir: "{{ vcs_workspace_path }}"
+
+- name: pull vcs files
+  shell: "vcs import src < {{ vcs_file | basename }}"
+  args:
+    chdir: "{{ vcs_workspace_path }}"
+
+- name: get all rosdep dependencies
+  shell: "rosdep install --from-paths src --ignore-src --rosdistro {{ vcs_ros2_distribution }} -yr"
+  args:
+    chdir: "{{ vcs_workspace_path }}"
+  ignore_errors: true
+
+- name: colcon build
+  shell: "source {{ vcs_ros2_setup_file }} && {{ vcs_ros2_build_command }}"
+  args:
+    chdir: "{{ vcs_workspace_path }}"
+    executable: "/bin/bash"
+

@@ -1,0 +1,46 @@
+#---
+- name: Stop unattended updates, if running
+  ansible.builtin.systemd:
+    name: unattended-upgrades
+    state: stopped
+  become: yes
+  ignore_errors: yes
+
+- name: start systemd-resolved
+  service:
+    name: systemd-resolved
+    masked: no 
+    state: restarted 
+  become: yes
+
+- name: Add temporary nameserver if not existing
+  lineinfile:
+    path: /etc/resolv.conf
+    line: 'nameserver 8.8.8.8'
+  become: yes
+
+- name: Fix any broken packages
+  shell: "dpkg --configure -a"
+  become: yes
+
+- name: Update aptitude
+  apt:
+    upgrade: full
+  become: yes
+
+- name: Install dependencies
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+  vars:
+    packages:
+    - iptables
+    - apt-utils
+    - iproute2
+    - iputils-ping
+    - network-manager
+    - net-tools
+    - avahi-daemon
+  become: yes
+
+

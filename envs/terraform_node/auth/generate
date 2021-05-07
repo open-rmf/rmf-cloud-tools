@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+cwd=$PWD
+script_path=$(dirname $(realpath "$0"))
+dir_path=$(dirname $script_path)
+dir_name=${dir_path##*/}
+
+cd $script_path
+
+aws ec2 delete-key-pair --key-name terraform_node
+aws ec2 create-key-pair --key-name ${dir_name} --query 'KeyMaterial' --output text > "${dir_name}_id_rsa"
+chmod 0600 "${dir_name}_id_rsa"
+
+echo "Generated Auth Keys for Terraform Node: $PWD/${dir_name}_id_rsa"
+
+cd $cwd

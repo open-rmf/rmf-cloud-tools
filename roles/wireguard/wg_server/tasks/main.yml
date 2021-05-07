@@ -1,0 +1,9 @@
+---
+- include_tasks: dependencies.yml
+  tags: dependency_setup 
+
+- include_tasks: generate_base_server_config.yml
+  tags: generate_config
+
+- include_tasks: deploy_server.yml
+  tags: deploy_server

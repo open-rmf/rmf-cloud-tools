@@ -1,0 +1,73 @@
+---
+- name: hostapd.conf
+  template:
+    src: hostapd.conf.j2
+    dest: /etc/hostapd/hostapd.conf
+    backup: true
+    mode: 0644
+  become: yes
+
+- name: restart hostapd
+  service:
+    name: hostapd
+    masked: no
+    state: restarted 
+  become: yes
+
+- name: wireless.network 
+  template:
+    src: 25-wireless.network.j2
+    dest: /etc/systemd/network/25-wireless.network
+    backup: true
+    mode: 0644
+  become: yes
+
+- name: dnsmasq.conf
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+    backup: true
+    mode: 0644
+  become: yes
+
+- name: Disable DNS on resolved
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^#DNSStubListener=no'
+    line: 'DNSStubListener=no'
+  become: yes
+
+- name: restart dnsmasq
+  service:
+    name: dnsmasq
+    masked: no
+    state: restarted
+  become: yes
+
+- name: make networkmanager ignore hotspot interface
+  template:
+    src: nm-ignore-interface.rules.j2
+    dest: /etc/udev/rules.d/nm-ignore-interface.rules
+    backup: true
+    mode: 0644
+  become: yes
+
+- name: Load udev rules
+  shell: "udevadm control --reload-rules && udevadm trigger"
+  become: yes
+
+- name: restart networking
+  service:
+    name: systemd-networkd 
+    masked: no
+    state: started
+    enabled: yes
+  become: yes
+
+- name: disable wait online service
+  service:
+    name: systemd-networkd-wait-online 
+    masked: yes
+    state: stopped 
+  become: yes
+
