@@ -19,6 +19,7 @@ vcs_additional_apts:
   - python3-vcstool
   - curl
   - qt5-default
+  - ignition-edifice
   - python3-shapely
   - python3-yaml
   - python3-requests
