@@ -3,7 +3,7 @@
 # ros2_distribution: The distribution of ROS2 you want to install
 # ros2_rmw_implementation: Goes into the RMW_IMPLEMENTATION variable for choosing which dds vendor to use
 # ros2_domain_id: DDS operating on different domain IDs cannot communicate. Use this to separate communication across different DDS instances
-# ros2_installation_type: ros-base installs basic values. ros-desktop installs the full ROS2 stack
+# ros2_installation_type: ros-base installs basic values. desktop installs the full ROS2 stack
 # ros2_cycloneddsxml_path: The path to install a cyclonedds configuration file, which we use by default
 # ros2_dds_network_interface: The network interface which we expect to operate DDS on. 
 ---
