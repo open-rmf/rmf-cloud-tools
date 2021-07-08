@@ -1,4 +1,4 @@
-# roles
+# Roles
 
 The Ansible roles provided here provide reusable infrastructure that meet various common use-cases in a deployment scenario. Each role is accompanied, in its README, a list of concepts and (mostly command line) instructions on how to reproduce the ansible roles manually. This should help with understanding what the role does, as well as how to modify it to fit your specific scenarios.
 
@@ -19,7 +19,7 @@ Machines that operate on RMF will need to communicate over ROS2. This role will 
 ### Role: unicast_cyclonedds
 In some cases ( such as over a cloud deployment ) there might be a few reasons not to use DDS multicast discovery. DDS discovery might not work well, perhaps due to the nature of your network architecture. ( [This](https://ubuntu.com/blog/exploring-ros-2-with-kubernetes) article gives a good overview of issues with ROS2 discovery ). It could also be more secure to only whitelist certain IP addresses ( perhaps we don't want to allow "any" device to participate ). In these cases, we can configure DDS to only interact with specific IP addresses.
 
-right now, only CycloneDDS has been researched and tested, but we welcome variants on other DDS vendors.
+Right now, only CycloneDDS has been researched and tested, but we welcome variants on other DDS vendors.
 
 ### Role: bridge 
 In some cases, your system might not be configured to be able to establish connections to the main network you are using for RMF. The system might only be accessible over its own hotspot or ethernet interface, for example. In such a scenario, we would require a: "bridge", which connects on one hand to your RMF network, and connects on the other hand to your system. 
