@@ -1,4 +1,4 @@
-# Ansile Primer
+# Ansible Primer
 
 Ansible is a useful automation tool for setting up infrastructure. We use it because it requires no setup on the target devices ( apart from SSH key access ) and is written in YAML, which helps readability. We use Ansible to automate the setting up of various Ansible Roles to accomplish infrastructure setup objectives. 
 
