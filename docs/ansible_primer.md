@@ -1,8 +1,8 @@
-# ansible_primer
+# Ansile Primer
 
 Ansible is a useful automation tool for setting up infrastructure. We use it because it requires no setup on the target devices ( apart from SSH key access ) and is written in YAML, which helps readability. We use Ansible to automate the setting up of various Ansible Roles to accomplish infrastructure setup objectives. 
 
-You can think of Ansible Roles as certain capabilities of an infrastructure device, which can be layered over each other. For example, the [Gateway](/docs/architecture.md#Gateway) a combination of a few ansible Roles:
+You can think of Ansible Roles as certain capabilities of an infrastructure device, which can be layered over each other. For example, the [Gateway](/docs/architecture.md#Gateway) has a combination of a few ansible Roles:
 
 * hotspot / bridge
 * wireguard client
@@ -10,10 +10,10 @@ You can think of Ansible Roles as certain capabilities of an infrastructure devi
 
 Using Ansible should hopefully allow you to scale up your deployments more quickly and repeatably, keep infrastructure up to date and document your infrastructure configuration as readable and accessible code.
 
-Some [Ansible concepts](https://docs.ansible.com/ansible/latest/network/getting_started/basic_concepts.html) can be found here, but you should hopefully be able to use these examples with some basic understanding.
+Some Ansible concepts can be found [here](https://docs.ansible.com/ansible/latest/network/getting_started/basic_concepts.html). Hopefully, you should be able to use these examples with some basic understanding.
 
 ## Conventions
-The roles can be found in the [roles](/roles) folder. Each role follows a similar structure:
+The roles can be found in the [roles folder](/roles). Each role follows a similar structure:
 
 ```
 [role-name]
@@ -41,7 +41,7 @@ localhost
 Describes an alias `localhost` which we will access with user `ubuntu` at ip address `127.0.0.1` over ssh. This `localhost` is then assigned the group `ros2`.
 * `playbook.yml`: A list of role assignments is formally made in this file.
 * `README.md`: Documentation for this specific example.
-* `run`: A helper script which automates the commands necessary to run this example. My following the `README.md`, you should be able to simply use the `run` file to set up your infrastructure.
+* `run`: A helper script which automates the commands necessary to run this example. By following the `README.md`, you should be able to simply use the `run` file to set up your infrastructure.
 
 The `tasks` folder contains `yaml` specifications on how to carry out role provisioning.
 
